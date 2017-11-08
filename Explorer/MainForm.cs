@@ -38,7 +38,7 @@ namespace Explorer
             helpbt.Region = new Region(gp);
             #endregion
 
-            toolTip1.SetToolTip(helpbt, "컬럼클릭 : 정렬기능");
+            toolTip1.SetToolTip(helpbt, "컬럼 클릭 시 정렬가능");
         }
 
         // 트리뷰에 드라이브 정보 입력
@@ -447,7 +447,13 @@ namespace Explorer
                                                 var text = openKey.GetValue("") as string;
                                                 if (text != null)
                                                 {
-                                                    ctx.MenuItems.Add(new MenuItem(text));
+                                                    var menuRegistry = new MenuItem();
+                                                    menuRegistry.Text = text;
+                                                    menuRegistry.Click += (o, s) =>
+                                                    {
+                                                        Process.Start(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text);
+                                                    };
+                                                    ctx.MenuItems.Add(menuRegistry);
                                                 }
                                             }
                                             openKey.Close();
@@ -651,6 +657,12 @@ namespace Explorer
         {
             Directory.CreateDirectory(path.Text + "\\새 폴더" + ++num);
             ListViewSetting(path.Text);
+        }
+
+        // 도움말 클릭 시
+        private void helpbt_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("컬럼 클릭 시 정렬가능");
         }
         #endregion
 

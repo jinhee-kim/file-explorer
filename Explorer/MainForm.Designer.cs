@@ -92,6 +92,7 @@
             this.helpbt.Size = new System.Drawing.Size(30, 24);
             this.helpbt.TabIndex = 6;
             this.helpbt.UseVisualStyleBackColor = false;
+            this.helpbt.Click += new System.EventHandler(this.helpbt_Click);
             // 
             // menuStrip1
             // 
