@@ -153,7 +153,7 @@
             // menuLargeIcon
             // 
             this.menuLargeIcon.Name = "menuLargeIcon";
-            this.menuLargeIcon.Size = new System.Drawing.Size(152, 22);
+            this.menuLargeIcon.Size = new System.Drawing.Size(127, 22);
             this.menuLargeIcon.Text = "아이콘(I)";
             this.menuLargeIcon.Click += new System.EventHandler(this.menuLargeIcon_Click);
             // 
@@ -162,14 +162,14 @@
             this.menuDetail.Checked = true;
             this.menuDetail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuDetail.Name = "menuDetail";
-            this.menuDetail.Size = new System.Drawing.Size(152, 22);
+            this.menuDetail.Size = new System.Drawing.Size(127, 22);
             this.menuDetail.Text = "자세히(D)";
             this.menuDetail.Click += new System.EventHandler(this.menuDetail_Click);
             // 
             // menuList
             // 
             this.menuList.Name = "menuList";
-            this.menuList.Size = new System.Drawing.Size(152, 22);
+            this.menuList.Size = new System.Drawing.Size(127, 22);
             this.menuList.Text = "간단히(L)";
             this.menuList.Click += new System.EventHandler(this.menuList_Click);
             // 
@@ -238,6 +238,7 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.LargeImageList = this.imgLarge;
             this.listView1.Location = new System.Drawing.Point(263, 52);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(736, 539);
             this.listView1.SmallImageList = this.imgSmall;

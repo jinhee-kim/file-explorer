@@ -19,6 +19,7 @@ namespace Explorer
     {
         private bool _isLoading = false;
         private int num = 0;
+        TextBox tbx;
 
         public MainForm()
         {
@@ -113,7 +114,7 @@ namespace Explorer
         private void ListViewSetting(String strPath)
         {
             if(_isLoading == true) return;
-
+            
             InitImage();
 
             GetSystemImg img = new GetSystemImg();
@@ -155,6 +156,7 @@ namespace Explorer
                 listView1.UseWaitCursor = true;
                 treeView1.UseWaitCursor = true;
                 treeView1.Enabled = false;
+                //listView1.Enabled = false;
 
                 int count = directoryInfo.GetDirectories("*").Length + directoryInfo.GetFiles("*.*").Length;
 
@@ -163,6 +165,8 @@ namespace Explorer
                 // 폴더 정보를 얻기
                 foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories("*"))
                 {
+                    if(subdirectoryInfo.Name.Equals("assembly")) continue; // 에러발생 폴더 사전제거
+                    
                     // 리스트뷰에 입력
                     imgSmall.Images.Add(img.GetIcon(subdirectoryInfo.FullName, false, false));
                     imgLarge.Images.Add(img.GetIcon(subdirectoryInfo.FullName, true, false));
@@ -219,6 +223,7 @@ namespace Explorer
                 listView1.UseWaitCursor = false;
                 treeView1.UseWaitCursor = false;
                 treeView1.Enabled = true;
+                //listView1.Enabled = true;
             }
             catch
             {
@@ -340,7 +345,13 @@ namespace Explorer
                 }
                 if (treeNodeTemp != null)
                 {
-                    treeView1.SelectedNode = treeNodeTemp;
+                    try
+                    {
+                        treeView1.SelectedNode = treeNodeTemp;
+                    }
+                    catch
+                    {
+                    }
                     treeNodeTemp.Expand();
                 }
             }
@@ -462,7 +473,7 @@ namespace Explorer
                             strSel = listView1.SelectedItems[0].SubItems[0].Text;
                             strSize = listView1.SelectedItems[0].SubItems[1].Text;
 
-                            if (strSize.Equals("")) // 폴더일 경우 트리뷰에 경로 표시
+                            if (strSize.Equals("")) // 폴더일 경우
                             {
                                 Directory.Delete(path.Text + "\\" + item.SubItems[0].Text, true);
                             }
@@ -479,33 +490,69 @@ namespace Explorer
                     menu3.Text = "이름 바꾸기(M)";
                     menu3.Click += (o, s) =>
                     {
-                         /*
-                            var tbx = new TextBox();
-                            tbx.Text = "hello!";
-                            tbx.Size = new Size(100, 21);
-                            tbx.Visible = true;
-                            tbx.Location = new Point(e.X + ((Control)sender).Left + 20, e.Y + ((Control)sender).Top + 20);
-                            //tbx.Location = new Point(500,500);
-                            //tbx.Show();
-
-                            listView1.Controls.Add(tbx);
-
-                        
-                            string path1 = @"C:\Users\Administrator\Desktop\Test1.txt";
-                            string path2 = @"C:\Users\Administrator\Desktop\Test2.txt";
-
-                            File.Move(path1, path2);
-
-                            ListViewSetting(path.Text);
-
-                            MessageBox.Show(item.SubItems[2].ToString());
-                            */
+                        tbx = new TextBox();
+                        tbx.Text = item.SubItems[0].Text;
+                        tbx.Font = new Font("굴림", 9f);
+                        tbx.Size = new Size(200, 21);
+                        tbx.Location = new Point(item.Position.X+17,item.Position.Y-2);
+                        listView1.Controls.Add(tbx);
+                        tbx.Focus();
+                        tbx.LostFocus += tbx_LostFocus;
                     };
                     ctx.MenuItems.Add(menu3);
                     
                     ctx.Show(this, new Point(e.X + ((Control)sender).Left + 20, e.Y + ((Control)sender).Top + 20));
                 }
             }
+        }
+
+        /* 이름 바꾸기 enter키 입력 메소드
+         private void tbx_KeyUp(object sender, KeyEventArgs e)
+         {
+             if (e.KeyCode == Keys.Enter)
+             {
+                 string path1 = path.Text+"\\"+listView1.SelectedItems[0].SubItems[0].Text;
+                 string path2 = path.Text + "\\" + tbx.Text;
+
+                 File.Move(path1, path2);
+
+                 ListViewSetting(path.Text);
+                
+                 tbx.Dispose(); 
+             }
+         }*/
+
+        // 포커스 이동 시 이름 바꾸기
+        private void tbx_LostFocus(object sender, EventArgs e)
+        {
+            string strSize = strSize = listView1.SelectedItems[0].SubItems[1].Text;
+            string path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+            string path2 = path.Text + "\\" + tbx.Text;
+            
+            if (strSize.Equals("")) // 폴더일 경우
+            {
+                if (Directory.Exists(path2))
+                {
+                    MessageBox.Show("중복된 폴더명 입니다.");
+                    tbx.Dispose();
+                    return;
+                }
+                Directory.Move(path1, path2);
+            }
+            else
+            {
+                if (File.Exists(path2))
+                {
+                    MessageBox.Show("중복된 파일명 입니다.");
+                    tbx.Dispose();
+                    return;
+                }
+                File.Move(path1, path2);
+            }
+            
+            ListViewSetting(path.Text);
+
+            tbx.Dispose();
         }
 
         // 칼럼값으로 정렬
@@ -524,13 +571,13 @@ namespace Explorer
         }
 
         #region 로딩창
-        // 폴더 정보를 출력하는 폼을 생성한다.
+        // 로딩 최대치 설정
         private void SetLoadingBar(int count)
         {
             loadingBar.Maximum = count;
             loadingBar.Value = 0;
         }
-
+        // 게이지 증가
         private void Loading()
         {
             if (loadingBar.Value < loadingBar.Maximum)
