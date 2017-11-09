@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Diagnostics;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Explorer
 {
@@ -19,6 +20,9 @@ namespace Explorer
     {
         private bool _isLoading = false;
         private int num = 0;
+        private string copyFile;
+        private string copyName;
+        private string copySize;
         TextBox tbx;
 
         public MainForm()
@@ -229,8 +233,6 @@ namespace Explorer
             {
                 // 디렉토리/파일 정보 읽을때 예외 발생하면 무시(파일 속성때문에 예외 발생함)
             }
-
-            
         }
 
         // 트리 노드 선택 이벤트
@@ -269,7 +271,6 @@ namespace Explorer
             }
             catch
             {
-                //CloseLoadingWnd();
                 // 디렉토리/파일 정보 읽을때 예외 발생하면 무시(파일 속성때문에 예외 발생함)
             }
 
@@ -303,10 +304,16 @@ namespace Explorer
 
             for (; ; )
             {
-                if (temp_node.Text.Equals(strDirectory))
-                    return temp_node;
+                try
+                {
+                    if (temp_node.Text.Equals(strDirectory))
+                        return temp_node;
+                }
+                catch
+                {
+                }
 
-                temp_node = temp_node.NextNode;
+            temp_node = temp_node.NextNode;
             }
         }
 
@@ -373,10 +380,10 @@ namespace Explorer
                 {
                     var item = selected[0];
                     var ctx = new ContextMenu();
-                    var menu1 = new MenuItem();
 
-                    menu1.Text = "열기(O)";
-                    menu1.Click += (o, s) =>
+                    var menu0 = new MenuItem();
+                    menu0.Text = "열기(O)";
+                    menu0.Click += (o, s) =>
                     {
                         #region 실행
                         String strSel;
@@ -419,7 +426,72 @@ namespace Explorer
                         }
                         #endregion
                     };
+                    ctx.MenuItems.Add(menu0);
+
+                    var menu1 = new MenuItem();
+                    menu1.Text = "복사(C)";
+                    menu1.Click += (o, s) =>
+                    {
+                        copyFile = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+                        copyName = listView1.SelectedItems[0].SubItems[0].Text;
+                        copySize = listView1.SelectedItems[0].SubItems[1].Text;
+                    };
                     ctx.MenuItems.Add(menu1);
+
+                    var menu2 = new MenuItem();
+                    menu2.Text = "붙여넣기(P)";
+                    menu2.Click += (o, s) =>
+                    {
+                        if(copyFile==null)
+                        {
+                            MessageBox.Show("복사된 파일/폴더가 없습니다.");
+                            return;
+                        }
+                        if (listView1.SelectedItems[0].SubItems[1].Text.Equals("")) // 폴더일 경우
+                        {
+                            string path1 = copyFile;
+                            string path2 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text + "\\" + copyName;
+
+                            if (copySize.Equals("")) // 폴더일 경우
+                            {
+                                if (Directory.Exists(path2))
+                                {
+                                    MessageBox.Show("중복된 폴더명 입니다.");
+                                    return;
+                                }
+                                try
+                                {
+                                    FileSystem.CopyDirectory(path1, path2);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("대상 폴더가 원본 폴더의 하위 폴더입니다.");
+                                }
+                            }
+                            else
+                            {
+                                if (File.Exists(path2))
+                                {
+                                    MessageBox.Show("중복된 파일명 입니다.");
+                                    return;
+                                }
+                                File.Copy(path1, path2);
+                            }
+
+                            if (HasSubDirectory(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text))
+                            {
+                                TreeNode node = FindNode(listView1.SelectedItems[0].SubItems[0].Text);
+                                node.Nodes.Add("XXX");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("폴더에만 붙여넣을 수 있습니다.");
+                            return;
+                        }
+                        
+                    };
+                    ctx.MenuItems.Add(menu2);
 
                     #region 레지스트리를 이용한 확장자에 따른 추가 메뉴
                     RegistryKey rKey = Registry.ClassesRoot.OpenSubKey("." + item.SubItems[2].Text);
@@ -467,9 +539,9 @@ namespace Explorer
                     #endregion
 
                     // TODO: 삭제 컨펌 창
-                    var menu2 = new MenuItem();
-                    menu2.Text = "삭제(D)";
-                    menu2.Click += (o, s) =>
+                    var menu3 = new MenuItem();
+                    menu3.Text = "삭제(D)";
+                    menu3.Click += (o, s) =>
                     {
                         if(MessageBox.Show("삭제 하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
@@ -490,11 +562,11 @@ namespace Explorer
                             ListViewSetting(path.Text);
                         }
                     };
-                    ctx.MenuItems.Add(menu2);
+                    ctx.MenuItems.Add(menu3);
 
-                    var menu3 = new MenuItem();
-                    menu3.Text = "이름 바꾸기(M)";
-                    menu3.Click += (o, s) =>
+                    var menu4 = new MenuItem();
+                    menu4.Text = "이름 바꾸기(M)";
+                    menu4.Click += (o, s) =>
                     {
                         tbx = new TextBox();
                         tbx.Text = item.SubItems[0].Text;
@@ -506,7 +578,7 @@ namespace Explorer
                         tbx.LostFocus += tbx_LostFocus;
                         tbx.KeyUp += tbx_KeyUp;
                     };
-                    ctx.MenuItems.Add(menu3);
+                    ctx.MenuItems.Add(menu4);
                     
                     ctx.Show(this, new Point(e.X + ((Control)sender).Left + 20, e.Y + ((Control)sender).Top + 20));
                 }
@@ -525,7 +597,7 @@ namespace Explorer
         // 이름 바꾸기 포커스 상실 이벤트
         private void tbx_LostFocus(object sender, EventArgs e)
         {
-            string strSize = strSize = listView1.SelectedItems[0].SubItems[1].Text;
+            string strSize = listView1.SelectedItems[0].SubItems[1].Text;
             string path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
             string path2 = path.Text + "\\" + tbx.Text;
             
@@ -671,9 +743,10 @@ namespace Explorer
         //아이콘 크기조절
         private void trackBar_ValueChanged(object sender, EventArgs e)
         {
-            if(listView1.View != View.LargeIcon)
+            if(listView1.View != View.LargeIcon && trackBar.Value != 1)
             {
                 MessageBox.Show("보기-아이콘에서 이용가능합니다.");
+                trackBar.Value = 1;
                 return;
             }
 
@@ -683,21 +756,9 @@ namespace Explorer
                     imgLarge.ImageSize = new Size(30, 30);
                     break;
                 case 1:
-                    imgLarge.ImageSize = new Size(35, 35);
-                    break;
-                case 2:
-                    imgLarge.ImageSize = new Size(40, 40);
-                    break;
-                case 3:
                     imgLarge.ImageSize = new Size(45, 45);
                     break;
-                case 4:
-                    imgLarge.ImageSize = new Size(50, 50);
-                    break;
-                case 5:
-                    imgLarge.ImageSize = new Size(55, 55);
-                    break;
-                case 6:
+                case 2:
                     imgLarge.ImageSize = new Size(60, 60);
                     break;
             }
@@ -705,5 +766,7 @@ namespace Explorer
             ListViewSetting(path.Text);
         }
         #endregion
+
+  
     }
 }

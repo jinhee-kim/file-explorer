@@ -356,12 +356,12 @@
             // 
             this.trackBar.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.trackBar.Location = new System.Drawing.Point(564, 570);
-            this.trackBar.Maximum = 6;
+            this.trackBar.Maximum = 2;
             this.trackBar.Name = "trackBar";
             this.trackBar.Size = new System.Drawing.Size(202, 45);
             this.trackBar.TabIndex = 7;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBar.Value = 3;
+            this.trackBar.Value = 1;
             this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
             // 
             // label1
