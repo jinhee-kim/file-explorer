@@ -504,6 +504,7 @@ namespace Explorer
                         listView1.Controls.Add(tbx);
                         tbx.Focus();
                         tbx.LostFocus += tbx_LostFocus;
+                        tbx.KeyUp += tbx_KeyUp;
                     };
                     ctx.MenuItems.Add(menu3);
                     
@@ -512,23 +513,16 @@ namespace Explorer
             }
         }
 
-        /* 이름 바꾸기 enter키 입력 메소드
-         private void tbx_KeyUp(object sender, KeyEventArgs e)
-         {
-             if (e.KeyCode == Keys.Enter)
-             {
-                 string path1 = path.Text+"\\"+listView1.SelectedItems[0].SubItems[0].Text;
-                 string path2 = path.Text + "\\" + tbx.Text;
+        // 이름 바꾸기 enter키 입력 이벤트
+        private void tbx_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                tbx.Visible = false;
+            }
+        }
 
-                 File.Move(path1, path2);
-
-                 ListViewSetting(path.Text);
-                
-                 tbx.Dispose(); 
-             }
-         }*/
-
-        // 포커스 이동 시 이름 바꾸기
+        // 이름 바꾸기 포커스 상실 이벤트
         private void tbx_LostFocus(object sender, EventArgs e)
         {
             string strSize = strSize = listView1.SelectedItems[0].SubItems[1].Text;
@@ -575,21 +569,6 @@ namespace Explorer
 
             listView1.ListViewItemSorter = new ListViewItemComparer(e.Column, listView1.Sorting);
         }
-
-        #region 로딩창
-        // 로딩 최대치 설정
-        private void SetLoadingBar(int count)
-        {
-            loadingBar.Maximum = count;
-            loadingBar.Value = 0;
-        }
-        // 게이지 증가
-        private void Loading()
-        {
-            if (loadingBar.Value < loadingBar.Maximum)
-                loadingBar.Value = loadingBar.Value + 1;
-        }
-        #endregion
 
         #region 상단바
         private void InitMenuCheck()
@@ -655,7 +634,13 @@ namespace Explorer
         // 새 폴더 생성
         private void 폴더ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Directory.CreateDirectory(path.Text + "\\새 폴더" + ++num);
+            try
+            {
+                Directory.CreateDirectory(path.Text + "\\새 폴더" + ++num);
+            }
+            catch
+            {
+            }
             ListViewSetting(path.Text);
         }
 
@@ -666,5 +651,59 @@ namespace Explorer
         }
         #endregion
 
+        #region 하단바
+        // 로딩 최대치 설정
+        private void SetLoadingBar(int count)
+        {
+            loadingBar.Maximum = count;
+            loadingBar.Value = 0;
+        }
+
+        // 게이지 증가
+        private void Loading()
+        {
+            if (loadingBar.Value < loadingBar.Maximum)
+            {
+                loadingBar.Value = loadingBar.Value + 1;
+            }
+        }
+
+        //아이콘 크기조절
+        private void trackBar_ValueChanged(object sender, EventArgs e)
+        {
+            if(listView1.View != View.LargeIcon)
+            {
+                MessageBox.Show("보기-아이콘에서 이용가능합니다.");
+                return;
+            }
+
+            switch (trackBar.Value)
+            {
+                case 0:
+                    imgLarge.ImageSize = new Size(30, 30);
+                    break;
+                case 1:
+                    imgLarge.ImageSize = new Size(35, 35);
+                    break;
+                case 2:
+                    imgLarge.ImageSize = new Size(40, 40);
+                    break;
+                case 3:
+                    imgLarge.ImageSize = new Size(45, 45);
+                    break;
+                case 4:
+                    imgLarge.ImageSize = new Size(50, 50);
+                    break;
+                case 5:
+                    imgLarge.ImageSize = new Size(55, 55);
+                    break;
+                case 6:
+                    imgLarge.ImageSize = new Size(60, 60);
+                    break;
+            }
+            
+            ListViewSetting(path.Text);
+        }
+        #endregion
     }
 }

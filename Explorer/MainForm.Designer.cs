@@ -62,10 +62,14 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.helpmenu = new System.Windows.Forms.ToolStripMenuItem();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.trackBar = new System.Windows.Forms.TrackBar();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.status.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -284,8 +288,10 @@
             // 
             // treeView1
             // 
+            this.treeView1.BackColor = System.Drawing.SystemColors.Window;
             this.treeView1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeView1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.treeView1.ImageIndex = 0;
             this.treeView1.ImageList = this.imgTree;
             this.treeView1.Location = new System.Drawing.Point(0, 52);
@@ -346,11 +352,47 @@
             this.helpmenu.Size = new System.Drawing.Size(55, 20);
             this.helpmenu.Text = "도움말";
             // 
+            // trackBar
+            // 
+            this.trackBar.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.trackBar.Location = new System.Drawing.Point(564, 570);
+            this.trackBar.Maximum = 6;
+            this.trackBar.Name = "trackBar";
+            this.trackBar.Size = new System.Drawing.Size(202, 45);
+            this.trackBar.TabIndex = 7;
+            this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar.Value = 3;
+            this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(482, 575);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 12);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "| 아이콘 크기 |";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label2.AutoSize = true;
+            this.label2.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label2.Location = new System.Drawing.Point(760, 575);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(11, 12);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "|";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(999, 591);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.trackBar);
             this.Controls.Add(this.loadingBar);
             this.Controls.Add(this.status);
             this.Controls.Add(this.splitter1);
@@ -371,6 +413,7 @@
             this.panel2.PerformLayout();
             this.status.ResumeLayout(false);
             this.status.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -410,6 +453,9 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TrackBar trackBar;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 
