@@ -6,6 +6,9 @@ namespace Explorer
 {
     class GetSystemImg
     {
+        [DllImport("User32.dll")]
+        public static extern int DestroyIcon(IntPtr hIcon);
+
         [DllImport("Shell32.dll")]
         private static extern int SHGetFileInfo(
                 string pszPath,         // 경로 버퍼
@@ -19,8 +22,8 @@ namespace Explorer
         private struct SHFILEINFO
         {
             public IntPtr hIcon;  // 파일 아이콘의 핸들
-            public int iIcon;     // 
-            public uint dwAttributes;   //
+            public int iIcon;
+            public uint dwAttributes;   
             [MarshalAs(UnmanagedType.LPStr, SizeConst = 260)]
             public string szDisplayName;
             [MarshalAs(UnmanagedType.LPStr, SizeConst = 80)]
@@ -39,7 +42,7 @@ namespace Explorer
             SysIconIndex = 0x00004000,
             LinkOverlay = 0x00008000
         }
-
+        
         /// <summary>
         /// 파일/폴더 이미지 얻기
         /// </summary>
@@ -62,10 +65,11 @@ namespace Explorer
                 uFlags = uFlags | SHGFI.SelectIcon;
 
             // 폴더/파일 아이콘 얻기
-            SHGetFileInfo(pszPath, 256, out psfi, (uint)cbFileInfo, uFlags);
-
+            SHGetFileInfo(pszPath, 500, out psfi, (uint)cbFileInfo, uFlags);
+            Icon icon = (Icon)Icon.FromHandle(psfi.hIcon).Clone();
+            DestroyIcon(psfi.hIcon); // 메모리 관리
             // 아이콘 형식으로 반환
-            return Icon.FromHandle(psfi.hIcon);
+            return icon;
         }
     }
 }

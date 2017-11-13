@@ -115,6 +115,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ShowPropertiesDialog.cs" />
     <Compile Include="unused\FileExecute.cs" />
     <Compile Include="unused\getRegistry.cs" />
     <Compile Include="GetSystemImg.cs" />

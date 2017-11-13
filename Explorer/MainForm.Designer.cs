@@ -43,6 +43,7 @@
             this.menuList = new System.Windows.Forms.ToolStripMenuItem();
             this.function = new System.Windows.Forms.ToolStripMenuItem();
             this.refresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.help = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -65,7 +66,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.status_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.status = new System.Windows.Forms.StatusStrip();
-            this.help = new System.Windows.Forms.ToolStripMenuItem();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -91,7 +92,7 @@
             this.helpbt.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.helpbt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.helpbt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.helpbt.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.helpbt.ForeColor = System.Drawing.SystemColors.InactiveBorder;
             this.helpbt.Image = global::Explorer.Properties.Resources.help_small;
             this.helpbt.Location = new System.Drawing.Point(964, -1);
             this.helpbt.Name = "helpbt";
@@ -198,9 +199,17 @@
             // 
             this.refresh.Name = "refresh";
             this.refresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.refresh.Size = new System.Drawing.Size(152, 22);
+            this.refresh.Size = new System.Drawing.Size(142, 22);
             this.refresh.Text = "새로고침";
             this.refresh.Click += new System.EventHandler(this.refresh_Click);
+            // 
+            // help
+            // 
+            this.help.Name = "help";
+            this.help.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.help.Size = new System.Drawing.Size(55, 20);
+            this.help.Text = "도움말";
+            this.help.Click += new System.EventHandler(this.help_Click);
             // 
             // panel2
             // 
@@ -213,9 +222,9 @@
             this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.button2);
             this.panel2.Controls.Add(this.path);
-            this.panel2.Location = new System.Drawing.Point(0, 24);
+            this.panel2.Location = new System.Drawing.Point(-7, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(999, 58);
+            this.panel2.Size = new System.Drawing.Size(1016, 36);
             this.panel2.TabIndex = 5;
             // 
             // button1
@@ -225,7 +234,7 @@
             this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button1.Font = new System.Drawing.Font("굴림", 8F);
             this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button1.Location = new System.Drawing.Point(925, 2);
+            this.button1.Location = new System.Drawing.Point(931, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(69, 23);
             this.button1.TabIndex = 7;
@@ -239,9 +248,9 @@
             this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button2.Font = new System.Drawing.Font("굴림", 8F);
             this.button2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button2.Location = new System.Drawing.Point(6, 2);
+            this.button2.Location = new System.Drawing.Point(13, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(147, 23);
+            this.button2.Size = new System.Drawing.Size(140, 23);
             this.button2.TabIndex = 4;
             this.button2.Text = "▲ 위로 가기";
             this.button2.UseVisualStyleBackColor = false;
@@ -255,24 +264,26 @@
             this.path.Location = new System.Drawing.Point(159, 3);
             this.path.Name = "path";
             this.path.ReadOnly = true;
-            this.path.Size = new System.Drawing.Size(761, 21);
+            this.path.Size = new System.Drawing.Size(767, 21);
             this.path.TabIndex = 2;
             // 
             // listView1
             // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.BackColor = System.Drawing.SystemColors.Window;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
             this.columnHeader4});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.FullRowSelect = true;
             this.listView1.LargeImageList = this.imgLarge;
             this.listView1.Location = new System.Drawing.Point(263, 52);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(736, 539);
+            this.listView1.Size = new System.Drawing.Size(736, 520);
             this.listView1.SmallImageList = this.imgSmall;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -316,16 +327,17 @@
             // 
             // treeView1
             // 
+            this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.BackColor = System.Drawing.SystemColors.Window;
             this.treeView1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.treeView1.ImageIndex = 0;
             this.treeView1.ImageList = this.imgTree;
             this.treeView1.Location = new System.Drawing.Point(0, 52);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(263, 539);
+            this.treeView1.Size = new System.Drawing.Size(263, 520);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -344,7 +356,7 @@
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(263, 52);
+            this.splitter1.Location = new System.Drawing.Point(0, 52);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 539);
             this.splitter1.TabIndex = 4;
@@ -400,19 +412,22 @@
             // 
             this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.status_txt});
-            this.status.Location = new System.Drawing.Point(266, 569);
+            this.status.Location = new System.Drawing.Point(3, 569);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(733, 22);
+            this.status.Size = new System.Drawing.Size(996, 22);
             this.status.TabIndex = 5;
             this.status.Text = "statusStrip1";
             // 
-            // help
+            // label2
             // 
-            this.help.Name = "help";
-            this.help.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.help.Size = new System.Drawing.Size(55, 20);
-            this.help.Text = "도움말";
-            this.help.Click += new System.EventHandler(this.help_Click);
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.SystemColors.Control;
+            this.label2.Location = new System.Drawing.Point(760, 575);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(15, 12);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "| ";
             // 
             // MainForm
             // 
@@ -420,9 +435,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(999, 591);
+            this.Controls.Add(this.loadingBar);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.trackBar);
-            this.Controls.Add(this.loadingBar);
             this.Controls.Add(this.status);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.listView1);
@@ -487,6 +503,7 @@
         private System.Windows.Forms.ToolStripStatusLabel status_txt;
         private System.Windows.Forms.StatusStrip status;
         private System.Windows.Forms.ToolStripMenuItem help;
+        private System.Windows.Forms.Label label2;
     }
 }
 

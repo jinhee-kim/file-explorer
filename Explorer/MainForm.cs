@@ -50,27 +50,6 @@ namespace Explorer
             toolTip1.SetToolTip(helpbt, "도움말");
         }
 
-        // 단축기 설정
-        /*private void MainForm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F5)
-            {
-                if (_isLoading == false)
-                {
-                    nowTime = DateTime.Now;
-                    if ((nowTime - refreshTime) < new TimeSpan(0,0,3))
-                    {
-                        MessageBox.Show("새로고침은 3초당 1회만 가능합니다.");
-                    }
-                    else
-                    {
-                        ListViewSetting(path.Text);
-                        refreshTime = DateTime.Now;
-                    }
-                }
-            }
-        }*/
-
         // 트리뷰에 드라이브 정보 입력
         private void InitTreeDriveSetting()
         {
@@ -630,6 +609,15 @@ namespace Explorer
 
                     ctx.MenuItems.Add("-");
 
+                    var menu8 = new MenuItem("속성");
+                    menu8.Click += (o, s) =>
+                    {
+                        ShowPropertiesDialog.ShowFileProperties(path.Text + "\\" + item.SubItems[0].Text);
+                    };
+                    ctx.MenuItems.Add(menu8);
+
+                    ctx.MenuItems.Add("-");
+
                     #region 레지스트리를 이용한 확장자에 따른 추가 메뉴
                     bool isDirectory = item.SubItems[1].Text.Equals("");
                     var extstr = "Directory";
@@ -957,16 +945,7 @@ namespace Explorer
         {
             if (_isLoading == false)
             {
-                nowTime = DateTime.Now;
-                if ((nowTime - refreshTime) < new TimeSpan(0, 0, 2))
-                {
-                    MessageBox.Show("새로고침은 2초당 1회만 가능합니다.");
-                }
-                else
-                {
-                    ListViewSetting(path.Text);
-                    refreshTime = DateTime.Now;
-                }
+                ListViewSetting(path.Text);
             }
         }
 
@@ -998,7 +977,7 @@ namespace Explorer
         // 도움말 클릭 시
         private void helpbt_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("              단축키\n\n  도움말 : F1\n  새로고침 : F5\n  새 폴더 만들기 : Ctrl+W\n  아이콘 보기 : Ctrl+I\n  자세히 보기 : Ctrl+D\n  간단히 보기 : Ctrl+L\n  종료 : Ctrl+x");
+            MessageBox.Show("               단축키\n\n  도움말 : F1\n  새로고침 : F5\n  새 폴더 만들기 : Ctrl+W\n  아이콘 보기 : Ctrl+I\n  자세히 보기 : Ctrl+D\n  간단히 보기 : Ctrl+L\n  종료 : Ctrl+x");
         }
 
         private void help_Click(object sender, EventArgs e)
