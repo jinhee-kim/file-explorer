@@ -25,8 +25,7 @@ namespace Explorer
         private string copyName;
         private string copySize;
         private bool isCopy;
-        DateTime nowTime;
-        DateTime refreshTime = DateTime.Now;
+        private NotifyIcon notify;
         TextBox tbx;
         Size size;
 
@@ -48,7 +47,52 @@ namespace Explorer
             #endregion
 
             toolTip1.SetToolTip(helpbt, "도움말");
+            RenderTray();
         }
+
+        #region 트레이 모드 관련
+        private void RenderTray()
+        {
+            notify = new NotifyIcon();
+
+            var menu = new ContextMenu();
+
+            var menuItem1 = new MenuItem();
+            menuItem1.Text = "정보";
+            menuItem1.Click += (o, s) =>
+            {
+                MessageBox.Show("Windows Explorer making");
+                //MessageBox.Show("© 2017 XS INC. ALL RIGHTS RESERVED.");
+            };
+
+            var menuItem2 = new MenuItem();
+            menuItem2.Text = "창모드";
+            menuItem2.Click += (o, s) =>
+            {
+                notify.Visible = false;
+                this.Show();
+            };
+
+            var menuItem3 = new MenuItem();
+            menuItem3.Text = "종료";
+            menuItem3.Click += (o, s) =>
+            {
+                this.Close();
+            };
+
+            menu.MenuItems.Add(menuItem1);
+            menu.MenuItems.Add(menuItem2);
+            menu.MenuItems.Add(menuItem3);
+
+            notify.Icon = Properties.Resources.foldericon;
+            notify.ContextMenu = menu;
+            notify.DoubleClick += (o, s) =>
+            {
+                this.Show();
+                notify.Visible = false;
+            };
+        }
+        #endregion
 
         // 트리뷰에 드라이브 정보 입력
         private void InitTreeDriveSetting()
@@ -166,6 +210,11 @@ namespace Explorer
                 // 폴더 정보를 얻기
                 foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
+                    if (subdirectoryInfo.Name == "Fonts")
+                    {
+                        Loading();
+                        continue; // Fonts폴더를 열 수 없어 우선 배제처리
+                    }
                     if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                     {
                         Loading();
@@ -188,7 +237,7 @@ namespace Explorer
                     listView1.Items[count - 1].SubItems.Add("");
                     listView1.Items[count - 1].SubItems.Add("파일 폴더");
                     listView1.Items[count - 1].SubItems.Add(subdirectoryInfo.LastWriteTime.ToString());
-                    listView1.Items[count - 1].SubItems.Add(subdirectoryInfo.Attributes.ToString());
+                    listView1.Items[count - 1].SubItems.Add(((long)0).ToString());
                     itemnum++;
 
                     Application.DoEvents();
@@ -235,6 +284,7 @@ namespace Explorer
                         listView1.Items[count - 1].SubItems.Add("file");
                     }
                     listView1.Items[count - 1].SubItems.Add(fileInfo.LastWriteTime.ToString());
+                    listView1.Items[count - 1].SubItems.Add(fileInfo.Length.ToString());
                     itemnum++;
 
                     Application.DoEvents();
@@ -722,8 +772,22 @@ namespace Explorer
 
                         listView1.ListViewItemSorter = new ListViewItemComparer(0, listView1.Sorting);
                     };
-                    var subMenu5 = new MenuItem("유형");
+                    var subMenu5 = new MenuItem("크기");
                     subMenu5.Click += (o, s) =>
+                    {
+                        if (_isLoading == true) return;
+
+                        //정렬을 위하여 사용 됨.
+                        if (listView1.Sorting == SortOrder.Ascending)
+                            listView1.Sorting = SortOrder.Descending;
+                        else
+                            listView1.Sorting = SortOrder.Ascending;
+
+
+                        listView1.ListViewItemSorter = new ListViewItemComparer(4, listView1.Sorting);
+                    };
+                    var subMenu6 = new MenuItem("유형");
+                    subMenu6.Click += (o, s) =>
                     {
                         if (_isLoading == true) return;
 
@@ -736,8 +800,8 @@ namespace Explorer
 
                         listView1.ListViewItemSorter = new ListViewItemComparer(2, listView1.Sorting);
                     };
-                    var subMenu6 = new MenuItem("수정된 날짜");
-                    subMenu6.Click += (o, s) =>
+                    var subMenu7 = new MenuItem("수정된 날짜");
+                    subMenu7.Click += (o, s) =>
                     {
                         if (_isLoading == true) return;
 
@@ -753,6 +817,7 @@ namespace Explorer
                     menu3.MenuItems.Add(subMenu4);
                     menu3.MenuItems.Add(subMenu5);
                     menu3.MenuItems.Add(subMenu6);
+                    menu3.MenuItems.Add(subMenu7);
                     ctx.MenuItems.Add(menu3);
 
                     ctx.MenuItems.Add("-");
@@ -974,10 +1039,20 @@ namespace Explorer
             }
         }
 
+        // 트레이모드 변경
+        private void trayMode_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            notify.Visible = true;
+            this.notify.BalloonTipTitle = "트레이 모드";
+            this.notify.BalloonTipText = "창모드로 이동하시려면 더블 클릭하세요.";
+            this.notify.ShowBalloonTip(2000);
+        }
+
         // 도움말 클릭 시
         private void helpbt_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("               단축키\n\n  도움말 : F1\n  새로고침 : F5\n  새 폴더 만들기 : Ctrl+W\n  아이콘 보기 : Ctrl+I\n  자세히 보기 : Ctrl+D\n  간단히 보기 : Ctrl+L\n  종료 : Ctrl+x");
+            MessageBox.Show("               단축키\n\n  도움말 : F1\n  새로고침 : F5\n  트레이 모드 : Ctrl+T\n  새 폴더 만들기 : Ctrl+W\n  아이콘 보기 : Ctrl+I\n  자세히 보기 : Ctrl+D\n  간단히 보기 : Ctrl+L\n  종료 : Ctrl+x");
         }
 
         private void help_Click(object sender, EventArgs e)
@@ -1036,6 +1111,7 @@ namespace Explorer
                 ListViewSetting(path.Text);
             }
         }
+
 
         #endregion
         

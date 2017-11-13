@@ -53,6 +53,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imgLarge = new System.Windows.Forms.ImageList(this.components);
             this.imgSmall = new System.Windows.Forms.ImageList(this.components);
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -67,6 +68,7 @@
             this.status_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.status = new System.Windows.Forms.StatusStrip();
             this.label2 = new System.Windows.Forms.Label();
+            this.trayMode = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -123,6 +125,7 @@
             this.menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createDir,
             this.toolStripMenuItem1,
+            this.trayMode,
             this.menuClose});
             this.menuFile.Name = "menuFile";
             this.menuFile.Size = new System.Drawing.Size(43, 20);
@@ -269,21 +272,20 @@
             // 
             // listView1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.BackColor = System.Drawing.SystemColors.Window;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
-            this.columnHeader4});
+            this.columnHeader4,
+            this.columnHeader5});
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.FullRowSelect = true;
             this.listView1.LargeImageList = this.imgLarge;
             this.listView1.Location = new System.Drawing.Point(263, 52);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(736, 520);
+            this.listView1.Size = new System.Drawing.Size(736, 539);
             this.listView1.SmallImageList = this.imgSmall;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -313,6 +315,10 @@
             this.columnHeader4.Text = "수정한 날짜";
             this.columnHeader4.Width = 233;
             // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "hidden";
+            // 
             // imgLarge
             // 
             this.imgLarge.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
@@ -327,17 +333,16 @@
             // 
             // treeView1
             // 
-            this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.BackColor = System.Drawing.SystemColors.Window;
             this.treeView1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.treeView1.ImageIndex = 0;
             this.treeView1.ImageList = this.imgTree;
             this.treeView1.Location = new System.Drawing.Point(0, 52);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(263, 520);
+            this.treeView1.Size = new System.Drawing.Size(263, 539);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -356,7 +361,7 @@
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(0, 52);
+            this.splitter1.Location = new System.Drawing.Point(263, 52);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 539);
             this.splitter1.TabIndex = 4;
@@ -378,13 +383,16 @@
             // 
             // trackBar
             // 
-            this.trackBar.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar.BackColor = System.Drawing.SystemColors.Control;
+            this.trackBar.Cursor = System.Windows.Forms.Cursors.Default;
+            this.trackBar.LargeChange = 6;
             this.trackBar.Location = new System.Drawing.Point(564, 570);
             this.trackBar.Maximum = 100;
             this.trackBar.Minimum = 20;
             this.trackBar.Name = "trackBar";
             this.trackBar.Size = new System.Drawing.Size(202, 45);
+            this.trackBar.SmallChange = 0;
             this.trackBar.TabIndex = 7;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar.Value = 60;
@@ -392,7 +400,7 @@
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.Control;
             this.label1.Location = new System.Drawing.Point(482, 575);
@@ -412,15 +420,15 @@
             // 
             this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.status_txt});
-            this.status.Location = new System.Drawing.Point(3, 569);
+            this.status.Location = new System.Drawing.Point(266, 569);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(996, 22);
+            this.status.Size = new System.Drawing.Size(733, 22);
             this.status.TabIndex = 5;
             this.status.Text = "statusStrip1";
             // 
             // label2
             // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.SystemColors.Control;
             this.label2.Location = new System.Drawing.Point(760, 575);
@@ -428,6 +436,14 @@
             this.label2.Size = new System.Drawing.Size(15, 12);
             this.label2.TabIndex = 9;
             this.label2.Text = "| ";
+            // 
+            // trayMode
+            // 
+            this.trayMode.Name = "trayMode";
+            this.trayMode.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
+            this.trayMode.Size = new System.Drawing.Size(199, 22);
+            this.trayMode.Text = "트레이 모드";
+            this.trayMode.Click += new System.EventHandler(this.trayMode_Click);
             // 
             // MainForm
             // 
@@ -504,6 +520,8 @@
         private System.Windows.Forms.StatusStrip status;
         private System.Windows.Forms.ToolStripMenuItem help;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ToolStripMenuItem trayMode;
     }
 }
 
