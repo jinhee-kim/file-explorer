@@ -34,13 +34,15 @@
             this.helpbt = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.새폴더만들기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.폴더ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createDir = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
             this.menuView = new System.Windows.Forms.ToolStripMenuItem();
             this.menuLargeIcon = new System.Windows.Forms.ToolStripMenuItem();
             this.menuDetail = new System.Windows.Forms.ToolStripMenuItem();
             this.menuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.function = new System.Windows.Forms.ToolStripMenuItem();
+            this.refresh = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -56,20 +58,19 @@
             this.imgTree = new System.Windows.Forms.ImageList(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.status = new System.Windows.Forms.StatusStrip();
-            this.status_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.loadingBar = new System.Windows.Forms.ProgressBar();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.helpmenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.trackBar = new System.Windows.Forms.TrackBar();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.status_txt = new System.Windows.Forms.ToolStripStatusLabel();
+            this.status = new System.Windows.Forms.StatusStrip();
+            this.help = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.status.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
+            this.status.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -88,6 +89,7 @@
             // 
             this.helpbt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.helpbt.BackColor = System.Drawing.SystemColors.InactiveBorder;
+            this.helpbt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.helpbt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.helpbt.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.helpbt.Image = global::Explorer.Properties.Resources.help_small;
@@ -102,9 +104,12 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.menuStrip1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.menuStrip1.ImeMode = System.Windows.Forms.ImeMode.On;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuFile,
-            this.menuView});
+            this.menuView,
+            this.function,
+            this.help});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.ShowItemToolTips = true;
@@ -115,32 +120,32 @@
             // menuFile
             // 
             this.menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.새폴더만들기ToolStripMenuItem,
+            this.createDir,
+            this.toolStripMenuItem1,
             this.menuClose});
             this.menuFile.Name = "menuFile";
             this.menuFile.Size = new System.Drawing.Size(43, 20);
             this.menuFile.Text = "파일";
             // 
-            // 새폴더만들기ToolStripMenuItem
+            // createDir
             // 
-            this.새폴더만들기ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.폴더ToolStripMenuItem});
-            this.새폴더만들기ToolStripMenuItem.Name = "새폴더만들기ToolStripMenuItem";
-            this.새폴더만들기ToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.새폴더만들기ToolStripMenuItem.Text = "새로 만들기(W)";
+            this.createDir.Name = "createDir";
+            this.createDir.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.createDir.Size = new System.Drawing.Size(199, 22);
+            this.createDir.Text = "새 폴더 만들기";
+            this.createDir.Click += new System.EventHandler(this.createDir_Click);
             // 
-            // 폴더ToolStripMenuItem
+            // toolStripMenuItem1
             // 
-            this.폴더ToolStripMenuItem.Name = "폴더ToolStripMenuItem";
-            this.폴더ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
-            this.폴더ToolStripMenuItem.Text = "폴더(F)";
-            this.폴더ToolStripMenuItem.Click += new System.EventHandler(this.폴더ToolStripMenuItem_Click);
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(196, 6);
             // 
             // menuClose
             // 
             this.menuClose.Name = "menuClose";
-            this.menuClose.Size = new System.Drawing.Size(157, 22);
-            this.menuClose.Text = "종료(X)";
+            this.menuClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.menuClose.Size = new System.Drawing.Size(199, 22);
+            this.menuClose.Text = "종료";
             this.menuClose.Click += new System.EventHandler(this.menuClose_Click);
             // 
             // menuView
@@ -158,8 +163,9 @@
             // menuLargeIcon
             // 
             this.menuLargeIcon.Name = "menuLargeIcon";
-            this.menuLargeIcon.Size = new System.Drawing.Size(127, 22);
-            this.menuLargeIcon.Text = "아이콘(I)";
+            this.menuLargeIcon.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.menuLargeIcon.Size = new System.Drawing.Size(153, 22);
+            this.menuLargeIcon.Text = "아이콘";
             this.menuLargeIcon.Click += new System.EventHandler(this.menuLargeIcon_Click);
             // 
             // menuDetail
@@ -167,16 +173,34 @@
             this.menuDetail.Checked = true;
             this.menuDetail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuDetail.Name = "menuDetail";
-            this.menuDetail.Size = new System.Drawing.Size(127, 22);
-            this.menuDetail.Text = "자세히(D)";
+            this.menuDetail.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.menuDetail.Size = new System.Drawing.Size(153, 22);
+            this.menuDetail.Text = "자세히";
             this.menuDetail.Click += new System.EventHandler(this.menuDetail_Click);
             // 
             // menuList
             // 
             this.menuList.Name = "menuList";
-            this.menuList.Size = new System.Drawing.Size(127, 22);
-            this.menuList.Text = "간단히(L)";
+            this.menuList.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.menuList.Size = new System.Drawing.Size(153, 22);
+            this.menuList.Text = "간단히";
             this.menuList.Click += new System.EventHandler(this.menuList_Click);
+            // 
+            // function
+            // 
+            this.function.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refresh});
+            this.function.Name = "function";
+            this.function.Size = new System.Drawing.Size(43, 20);
+            this.function.Text = "기능";
+            // 
+            // refresh
+            // 
+            this.refresh.Name = "refresh";
+            this.refresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.refresh.Size = new System.Drawing.Size(152, 22);
+            this.refresh.Text = "새로고침";
+            this.refresh.Click += new System.EventHandler(this.refresh_Click);
             // 
             // panel2
             // 
@@ -205,7 +229,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(69, 23);
             this.button1.TabIndex = 7;
-            this.button1.Text = "새로고침";
+            this.button1.Text = "경로복사";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -227,8 +251,10 @@
             // 
             this.path.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.path.BackColor = System.Drawing.SystemColors.Window;
             this.path.Location = new System.Drawing.Point(159, 3);
             this.path.Name = "path";
+            this.path.ReadOnly = true;
             this.path.Size = new System.Drawing.Size(761, 21);
             this.path.TabIndex = 2;
             // 
@@ -241,6 +267,7 @@
             this.columnHeader3,
             this.columnHeader4});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.FullRowSelect = true;
             this.listView1.LargeImageList = this.imgLarge;
             this.listView1.Location = new System.Drawing.Point(263, 52);
             this.listView1.MultiSelect = false;
@@ -253,6 +280,7 @@
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
+            this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDown);
             // 
             // columnHeader1
             // 
@@ -322,22 +350,6 @@
             this.splitter1.TabIndex = 4;
             this.splitter1.TabStop = false;
             // 
-            // status
-            // 
-            this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.status_txt});
-            this.status.Location = new System.Drawing.Point(266, 569);
-            this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(733, 22);
-            this.status.TabIndex = 5;
-            this.status.Text = "statusStrip1";
-            // 
-            // status_txt
-            // 
-            this.status_txt.Name = "status_txt";
-            this.status_txt.Size = new System.Drawing.Size(121, 17);
-            this.status_txt.Text = "toolStripStatusLabel1";
-            // 
             // loadingBar
             // 
             this.loadingBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -355,42 +367,59 @@
             // trackBar
             // 
             this.trackBar.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.trackBar.BackColor = System.Drawing.SystemColors.Control;
             this.trackBar.Location = new System.Drawing.Point(564, 570);
-            this.trackBar.Maximum = 2;
+            this.trackBar.Maximum = 100;
+            this.trackBar.Minimum = 20;
             this.trackBar.Name = "trackBar";
             this.trackBar.Size = new System.Drawing.Size(202, 45);
             this.trackBar.TabIndex = 7;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBar.Value = 1;
-            this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            this.trackBar.Value = 60;
+            this.trackBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBar_MouseUp);
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.Control;
             this.label1.Location = new System.Drawing.Point(482, 575);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 8;
             this.label1.Text = "| 아이콘 크기 |";
             // 
-            // label2
+            // status_txt
             // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.label2.AutoSize = true;
-            this.label2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label2.Location = new System.Drawing.Point(760, 575);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(11, 12);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "|";
+            this.status_txt.BackColor = System.Drawing.SystemColors.Control;
+            this.status_txt.Name = "status_txt";
+            this.status_txt.Size = new System.Drawing.Size(121, 17);
+            this.status_txt.Text = "toolStripStatusLabel1";
+            // 
+            // status
+            // 
+            this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.status_txt});
+            this.status.Location = new System.Drawing.Point(266, 569);
+            this.status.Name = "status";
+            this.status.Size = new System.Drawing.Size(733, 22);
+            this.status.TabIndex = 5;
+            this.status.Text = "statusStrip1";
+            // 
+            // help
+            // 
+            this.help.Name = "help";
+            this.help.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.help.Size = new System.Drawing.Size(55, 20);
+            this.help.Text = "도움말";
+            this.help.Click += new System.EventHandler(this.help_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(999, 591);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.trackBar);
             this.Controls.Add(this.loadingBar);
@@ -400,6 +429,7 @@
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -411,9 +441,9 @@
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.status.ResumeLayout(false);
             this.status.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -430,8 +460,6 @@
         private System.Windows.Forms.ImageList imgSmall;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.StatusStrip status;
-        private System.Windows.Forms.ToolStripStatusLabel status_txt;
         private System.Windows.Forms.ToolStripMenuItem helpmenu;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -444,10 +472,8 @@
         private System.Windows.Forms.ProgressBar loadingBar;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ToolStripMenuItem 새폴더만들기ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 폴더ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createDir;
         private System.Windows.Forms.Button helpbt;
-        private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.ImageList imgTree;
         private System.Windows.Forms.TextBox path;
         private System.Windows.Forms.Panel panel2;
@@ -455,7 +481,12 @@
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.TrackBar trackBar;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem function;
+        private System.Windows.Forms.ToolStripMenuItem refresh;
+        private System.Windows.Forms.ToolStripStatusLabel status_txt;
+        private System.Windows.Forms.StatusStrip status;
+        private System.Windows.Forms.ToolStripMenuItem help;
     }
 }
 

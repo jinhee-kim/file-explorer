@@ -19,11 +19,16 @@ namespace Explorer
     public partial class MainForm : Form
     {
         private bool _isLoading = false;
-        private int num = 0;
+        private int num = 1;
+        private int itemnum = 0;
         private string copyFile;
         private string copyName;
         private string copySize;
+        private bool isCopy;
+        DateTime nowTime;
+        DateTime refreshTime = DateTime.Now;
         TextBox tbx;
+        Size size;
 
         public MainForm()
         {
@@ -42,8 +47,29 @@ namespace Explorer
             helpbt.Region = new Region(gp);
             #endregion
 
-            toolTip1.SetToolTip(helpbt, "컬럼 클릭 시 정렬가능");
+            toolTip1.SetToolTip(helpbt, "도움말");
         }
+
+        // 단축기 설정
+        /*private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F5)
+            {
+                if (_isLoading == false)
+                {
+                    nowTime = DateTime.Now;
+                    if ((nowTime - refreshTime) < new TimeSpan(0,0,3))
+                    {
+                        MessageBox.Show("새로고침은 3초당 1회만 가능합니다.");
+                    }
+                    else
+                    {
+                        ListViewSetting(path.Text);
+                        refreshTime = DateTime.Now;
+                    }
+                }
+            }
+        }*/
 
         // 트리뷰에 드라이브 정보 입력
         private void InitTreeDriveSetting()
@@ -118,7 +144,9 @@ namespace Explorer
         private void ListViewSetting(String strPath)
         {
             if(_isLoading == true) return;
-            
+
+            itemnum = 0;
+
             InitImage();
 
             GetSystemImg img = new GetSystemImg();
@@ -127,15 +155,7 @@ namespace Explorer
 
             DirectoryInfo directoryInfo = new DirectoryInfo(strPath);
 
-            try
-            {
-                status_txt.Text = (directoryInfo.GetDirectories().Length + directoryInfo.GetFiles().Length).ToString() + "개 항목";
-            }
-            catch
-            {
-                status_txt.Text = strPath;
-            }
-
+            
             // 빈 폴더일 경우
             try
             {
@@ -155,48 +175,68 @@ namespace Explorer
             {
                 // 목록 로딩 중 다른 동작 제한
                 _isLoading = true;
-                button1.UseWaitCursor = true;
-                button2.UseWaitCursor = true;
-                listView1.UseWaitCursor = true;
-                treeView1.UseWaitCursor = true;
-                treeView1.Enabled = false;
-                //listView1.Enabled = false;
+                treeView1.Visible = false;
+                listView1.Visible = false; // 속도 향상의 핵심
+                trackBar.Enabled = false;
+                this.KeyPreview = false;
 
-                int count = directoryInfo.GetDirectories("*").Length + directoryInfo.GetFiles("*.*").Length;
+                int count = directoryInfo.GetDirectories().Length + directoryInfo.GetFiles().Length;
 
                 SetLoadingBar(count);
-
+                
                 // 폴더 정보를 얻기
-                foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories("*"))
+                foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
-                    if(subdirectoryInfo.Name.Equals("assembly")) continue; // 에러발생 폴더 사전제거
-                    
-                    // 리스트뷰에 입력
-                    imgSmall.Images.Add(img.GetIcon(subdirectoryInfo.FullName, false, false));
-                    imgLarge.Images.Add(img.GetIcon(subdirectoryInfo.FullName, true, false));
+                    if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        Loading();
+                        continue; // 숨긴폴더 사전제거
+                    }
 
-                    count = imgSmall.Images.Count;
+                    // 리스트뷰에 입력
+                    if (listView1.View == View.LargeIcon)
+                    {
+                        imgLarge.Images.Add(img.GetIcon(subdirectoryInfo.FullName, true, false));
+                        count = imgLarge.Images.Count;
+                    }
+                    else
+                    {
+                        imgSmall.Images.Add(img.GetIcon(subdirectoryInfo.FullName, false, false));
+                        count = imgSmall.Images.Count;
+                    }
 
                     listView1.Items.Add(subdirectoryInfo.Name, count - 1);
                     listView1.Items[count - 1].SubItems.Add("");
                     listView1.Items[count - 1].SubItems.Add("파일 폴더");
                     listView1.Items[count - 1].SubItems.Add(subdirectoryInfo.LastWriteTime.ToString());
                     listView1.Items[count - 1].SubItems.Add(subdirectoryInfo.Attributes.ToString());
+                    itemnum++;
 
                     Application.DoEvents();
                     Loading();
 
                 }
-
+                
                 // 파일 정보(리스트뷰 입력)
-
-                foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.*"))
+                foreach (FileInfo fileInfo in directoryInfo.GetFiles())
                 {
+                    if ((fileInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        Loading();
+                        continue; // 숨긴폴더 사전제거
+                    }
 
-                    imgSmall.Images.Add(img.GetIcon(fileInfo.FullName, false, false));
-                    imgLarge.Images.Add(img.GetIcon(fileInfo.FullName, true, false));
-
-                    count = imgSmall.Images.Count;
+                    // 리스트뷰에 입력
+                    if (listView1.View == View.LargeIcon)
+                    {
+                        imgLarge.Images.Add(img.GetIcon(fileInfo.FullName, true, false));
+                        count = imgLarge.Images.Count;
+                    }
+                    else
+                    {
+                        imgSmall.Images.Add(img.GetIcon(fileInfo.FullName, false, false));
+                        count = imgSmall.Images.Count;
+                    }
 
                     listView1.Items.Add(fileInfo.Name, count - 1);
                     if (fileInfo.Length > 1024 * 1024 * 1024)
@@ -216,18 +256,17 @@ namespace Explorer
                         listView1.Items[count - 1].SubItems.Add("file");
                     }
                     listView1.Items[count - 1].SubItems.Add(fileInfo.LastWriteTime.ToString());
+                    itemnum++;
 
                     Application.DoEvents();
                     Loading();
                 }
-
+                status_txt.Text = itemnum.ToString() + "개 항목";
+                
                 _isLoading = false;
-                button1.UseWaitCursor = false;
-                button2.UseWaitCursor = false;
-                listView1.UseWaitCursor = false;
-                treeView1.UseWaitCursor = false;
-                treeView1.Enabled = true;
-                //listView1.Enabled = true;
+                treeView1.Visible = true;
+                listView1.Visible = true;
+                this.KeyPreview = true;
             }
             catch
             {
@@ -250,8 +289,6 @@ namespace Explorer
         {
             String strPath;
             int count;
-            GetSystemImg sysimglst = new GetSystemImg();
-
             strPath = node.FullPath + "\\";
 
             DirectoryInfo directoryInfo = new DirectoryInfo(strPath);
@@ -260,8 +297,13 @@ namespace Explorer
             try
             {
                 // 폴더 정보를 얻기
-                foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories("*"))
+                foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
+                    if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        continue; // 숨긴폴더 사전제거
+                    }
+
                     count = node.Nodes.Add(new TreeNode(subdirectoryInfo.Name, imgTree.Images.Count - 2, imgTree.Images.Count - 1));
                     if (HasSubDirectory(node.Nodes[count].FullPath))
                     {
@@ -321,13 +363,26 @@ namespace Explorer
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             if (_isLoading == true) return;
-            if (listView1.SelectedItems[0].Text.Equals("빈 폴더")) return;
+            try
+            {
+                if (listView1.SelectedItems[0].Text.Equals("빈 폴더")) return;
+            }
+            catch
+            {
+            }
 
             String strSel;
             String strSize;
 
-            strSel = listView1.SelectedItems[0].SubItems[0].Text;
-            strSize = listView1.SelectedItems[0].SubItems[1].Text;
+            try
+            {
+                strSel = listView1.SelectedItems[0].SubItems[0].Text;
+                strSize = listView1.SelectedItems[0].SubItems[1].Text;
+            }
+            catch // 렌더링 중 이동불가 처리
+            {
+                return;
+            }
 
             if (strSize.Equals("")) // 폴더일 경우 트리뷰에 경로 표시
             {
@@ -365,24 +420,37 @@ namespace Explorer
             else
             {
                 //FileExecute.ShellExecute(0, "open", path.Text + "\\" + strSel, null, null, (int)FileExecute.SW.SHOWNORMAL);
-                Process.Start(path.Text+"\\"+ listView1.SelectedItems[0].SubItems[0].Text);
+                try
+                {
+                    Process.Start(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text);
+                }
+                catch
+                {
+                    MessageBox.Show("연결된 프로그램이 없습니다.\n연결 프로그램 지정 후 실행하십시오.");
+                }
             }
         }
-        
+
         // 리스트뷰 우클릭 메뉴
         private void listView1_MouseClick(object sender, MouseEventArgs e)
         {
-            if (listView1.SelectedItems[0].Text.Equals("빈 폴더")) return;
+            try
+            {
+                if (listView1.SelectedItems[0].Text.Equals("빈 폴더")) return;
+            }
+            catch
+            {
+            }
             if (e.Button == MouseButtons.Right)
             {
                 var selected = listView1.SelectedItems;
-                if (selected.Count > 0)
+
+                if (selected.Count > 0 && listView1.GetItemAt(e.X, e.Y) != null)
                 {
                     var item = selected[0];
                     var ctx = new ContextMenu();
 
-                    var menu0 = new MenuItem();
-                    menu0.Text = "열기(O)";
+                    var menu0 = new MenuItem("열기");
                     menu0.Click += (o, s) =>
                     {
                         #region 실행
@@ -428,21 +496,32 @@ namespace Explorer
                     };
                     ctx.MenuItems.Add(menu0);
 
-                    var menu1 = new MenuItem();
-                    menu1.Text = "복사(C)";
-                    menu1.Click += (o, s) =>
+                    ctx.MenuItems.Add("-");
+                    
+                    var menu3 = new MenuItem("잘라내기");
+                    menu3.Click += (o, s) =>
                     {
+                        isCopy = false;
                         copyFile = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
                         copyName = listView1.SelectedItems[0].SubItems[0].Text;
                         copySize = listView1.SelectedItems[0].SubItems[1].Text;
                     };
-                    ctx.MenuItems.Add(menu1);
+                    ctx.MenuItems.Add(menu3);
 
-                    var menu2 = new MenuItem();
-                    menu2.Text = "붙여넣기(P)";
-                    menu2.Click += (o, s) =>
+                    var menu4 = new MenuItem("복사");
+                    menu4.Click += (o, s) =>
                     {
-                        if(copyFile==null)
+                        isCopy = true;
+                        copyFile = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+                        copyName = listView1.SelectedItems[0].SubItems[0].Text;
+                        copySize = listView1.SelectedItems[0].SubItems[1].Text;
+                    };
+                    ctx.MenuItems.Add(menu4);
+
+                    var menu5 = new MenuItem("붙여넣기");
+                    menu5.Click += (o, s) =>
+                    {
+                        if (copyFile == null)
                         {
                             MessageBox.Show("복사된 파일/폴더가 없습니다.");
                             return;
@@ -461,7 +540,14 @@ namespace Explorer
                                 }
                                 try
                                 {
-                                    FileSystem.CopyDirectory(path1, path2);
+                                    if (isCopy)
+                                    {
+                                        FileSystem.CopyDirectory(path1, path2);
+                                    }
+                                    else
+                                    {
+                                        FileSystem.MoveDirectory(path1, path2);
+                                    }
                                 }
                                 catch
                                 {
@@ -475,7 +561,14 @@ namespace Explorer
                                     MessageBox.Show("중복된 파일명 입니다.");
                                     return;
                                 }
-                                File.Copy(path1, path2);
+                                if (isCopy)
+                                {
+                                    File.Copy(path1, path2);
+                                }
+                                else
+                                {
+                                    File.Move(path1, path2);
+                                }
                             }
 
                             if (HasSubDirectory(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text))
@@ -489,61 +582,17 @@ namespace Explorer
                             MessageBox.Show("폴더에만 붙여넣을 수 있습니다.");
                             return;
                         }
-                        
+                        if (!isCopy) ListViewSetting(path.Text);
                     };
-                    ctx.MenuItems.Add(menu2);
+                    ctx.MenuItems.Add(menu5);
 
-                    #region 레지스트리를 이용한 확장자에 따른 추가 메뉴
-                    RegistryKey rKey = Registry.ClassesRoot.OpenSubKey("." + item.SubItems[2].Text);
-                    if (rKey != null)
-                    {
-                        var extstr = rKey.GetValue("") as string;
-                        rKey.Close();
-                        if (extstr != null)
-                        {
-                            var subKey = Registry.ClassesRoot.OpenSubKey(extstr);
-                            if (subKey != null)
-                            {
-                                var shellKey = subKey.OpenSubKey("shell");
-                                subKey.Close();
-                                if (shellKey != null)
-                                {
-                                    var subKeys = shellKey.GetSubKeyNames();
-                                    if (subKeys != null)
-                                    {
-                                        foreach (var key in subKeys)
-                                        {
-                                            var openKey = shellKey.OpenSubKey(key);
-                                            if (openKey != null)
-                                            {
-                                                var text = openKey.GetValue("") as string;
-                                                if (text != null)
-                                                {
-                                                    var menuRegistry = new MenuItem();
-                                                    menuRegistry.Text = text;
-                                                    menuRegistry.Click += (o, s) =>
-                                                    {
-                                                        Process.Start(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text);
-                                                    };
-                                                    ctx.MenuItems.Add(menuRegistry);
-                                                }
-                                            }
-                                            openKey.Close();
-                                        }
-                                        shellKey.Close();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    #endregion
+                    ctx.MenuItems.Add("-");
 
                     // TODO: 삭제 컨펌 창
-                    var menu3 = new MenuItem();
-                    menu3.Text = "삭제(D)";
-                    menu3.Click += (o, s) =>
+                    var menu6 = new MenuItem("삭제");
+                    menu6.Click += (o, s) =>
                     {
-                        if(MessageBox.Show("삭제 하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        if (MessageBox.Show("삭제 하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             String strSel;
                             String strSize;
@@ -562,25 +611,225 @@ namespace Explorer
                             ListViewSetting(path.Text);
                         }
                     };
-                    ctx.MenuItems.Add(menu3);
+                    ctx.MenuItems.Add(menu6);
 
-                    var menu4 = new MenuItem();
-                    menu4.Text = "이름 바꾸기(M)";
-                    menu4.Click += (o, s) =>
+                    var menu7 = new MenuItem("이름 바꾸기");
+                    menu7.Click += (o, s) =>
                     {
                         tbx = new TextBox();
                         tbx.Text = item.SubItems[0].Text;
                         tbx.Font = new Font("굴림", 9f);
                         tbx.Size = new Size(200, 21);
-                        tbx.Location = new Point(item.Position.X+17,item.Position.Y-2);
+                        tbx.Location = new Point(item.Position.X + 17, item.Position.Y - 2);
                         listView1.Controls.Add(tbx);
                         tbx.Focus();
                         tbx.LostFocus += tbx_LostFocus;
                         tbx.KeyUp += tbx_KeyUp;
                     };
-                    ctx.MenuItems.Add(menu4);
+                    ctx.MenuItems.Add(menu7);
+
+                    ctx.MenuItems.Add("-");
+
+                    #region 레지스트리를 이용한 확장자에 따른 추가 메뉴
+                    bool isDirectory = item.SubItems[1].Text.Equals("");
+                    var extstr = "Directory";
+
+                    RegistryKey rKey = Registry.ClassesRoot.OpenSubKey(isDirectory ? "Directory" : "." + item.SubItems[2].Text);
+                    if (rKey != null)
+                    {
+                        if (!isDirectory)
+                        {
+                            extstr = rKey.GetValue("") as string;
+                        }
+
+                        rKey.Close();
+                        if (extstr != null)
+                        {
+                            var subKey = Registry.ClassesRoot.OpenSubKey(extstr);
+                            if (subKey != null)
+                            {
+                                var shellKey = subKey.OpenSubKey("shell");
+                                subKey.Close();
+                                if (shellKey != null)
+                                {
+                                    var subKeys = shellKey.GetSubKeyNames();
+                                    if (subKeys != null)
+                                    {
+                                        foreach (string key in subKeys)
+                                        {
+                                            var menuRegistry = new MenuItem();
+                                            menuRegistry.Text = key;
+                                            ctx.MenuItems.Add(menuRegistry);
+                                            menuRegistry.Click += (o, s) =>
+                                            {
+                                                MessageBox.Show("레지스트리 값 : " + key);
+                                            };
+                                        }
+                                        shellKey.Close();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    ctx.Show(this, new Point(e.X + ((Control)sender).Left, e.Y + ((Control)sender).Top));
+                }
+            }
+        }
+
+        // 리스트뷰 여백 우클릭 메뉴
+        private void listView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (listView1.GetItemAt(e.X, e.Y) == null)
+                {
+                    var ctx = new ContextMenu();
+
+                    var menu1 = new MenuItem("새 폴더 만들기");
+                    menu1.Click += (o, s) =>
+                    {
+                        createDir.PerformClick();
+                    };
+                    ctx.MenuItems.Add(menu1);
+
+                    ctx.MenuItems.Add("-");
+
+                    var menu2 = new MenuItem("보기");
+                    var subMenu1 = new MenuItem("아이콘");
+                    subMenu1.Click += (o, s) =>
+                    {
+                        menuLargeIcon.PerformClick();
+                    };
+                    var subMenu2 = new MenuItem("자세히");
+                    subMenu2.Click += (o, s) =>
+                    {
+                        menuDetail.PerformClick();
+                    };
+                    var subMenu3 = new MenuItem("간단히");
+                    subMenu3.Click += (o, s) =>
+                    {
+                        menuList.PerformClick();
+                    };
+                    menu2.MenuItems.Add(subMenu1);
+                    menu2.MenuItems.Add(subMenu2);
+                    menu2.MenuItems.Add(subMenu3);
+                    ctx.MenuItems.Add(menu2);
+
+                    ctx.MenuItems.Add("-");
+
+                    var menu3 = new MenuItem("정렬");
+                    var subMenu4 = new MenuItem("이름");
+                    subMenu4.Click += (o, s) =>
+                    {
+                        if (_isLoading == true) return;
+
+                        //정렬을 위하여 사용 됨.
+                        if (listView1.Sorting == SortOrder.Ascending)
+                            listView1.Sorting = SortOrder.Descending;
+                        else
+                            listView1.Sorting = SortOrder.Ascending;
+
+
+                        listView1.ListViewItemSorter = new ListViewItemComparer(0, listView1.Sorting);
+                    };
+                    var subMenu5 = new MenuItem("유형");
+                    subMenu5.Click += (o, s) =>
+                    {
+                        if (_isLoading == true) return;
+
+                        //정렬을 위하여 사용 됨.
+                        if (listView1.Sorting == SortOrder.Ascending)
+                            listView1.Sorting = SortOrder.Descending;
+                        else
+                            listView1.Sorting = SortOrder.Ascending;
+
+
+                        listView1.ListViewItemSorter = new ListViewItemComparer(2, listView1.Sorting);
+                    };
+                    var subMenu6 = new MenuItem("수정된 날짜");
+                    subMenu6.Click += (o, s) =>
+                    {
+                        if (_isLoading == true) return;
+
+                        //정렬을 위하여 사용 됨.
+                        if (listView1.Sorting == SortOrder.Ascending)
+                            listView1.Sorting = SortOrder.Descending;
+                        else
+                            listView1.Sorting = SortOrder.Ascending;
+
+
+                        listView1.ListViewItemSorter = new ListViewItemComparer(3, listView1.Sorting);
+                    };
+                    menu3.MenuItems.Add(subMenu4);
+                    menu3.MenuItems.Add(subMenu5);
+                    menu3.MenuItems.Add(subMenu6);
+                    ctx.MenuItems.Add(menu3);
+
+                    ctx.MenuItems.Add("-");
+
+                    var menu5 = new MenuItem("붙여넣기");
+                    menu5.Click += (o, s) =>
+                    {
+                        if (copyFile == null)
+                        {
+                            MessageBox.Show("복사된 파일/폴더가 없습니다.");
+                            return;
+                        }
+
+                        string path1 = copyFile;
+                        string path2 = path.Text + "\\" + copyName;
+
+                        if (copySize.Equals("")) // 폴더일 경우
+                        {
+                            if (Directory.Exists(path2))
+                            {
+                                MessageBox.Show("중복된 폴더명 입니다.");
+                                return;
+                            }
+                            try
+                            {
+                                if (isCopy)
+                                {
+                                    FileSystem.CopyDirectory(path1, path2);
+                                }
+                                else
+                                {
+                                    FileSystem.MoveDirectory(path1, path2);
+                                }
+                            }
+                            catch
+                            {
+                                MessageBox.Show("대상 폴더가 원본 폴더의 하위 폴더입니다.");
+                            }
+                        }
+                        else
+                        {
+                            if (File.Exists(path2))
+                            {
+                                MessageBox.Show("중복된 파일명 입니다.");
+                                return;
+                            }
+                            if (isCopy)
+                            {
+                                File.Copy(path1, path2);
+                            }
+                            else
+                            {
+                                File.Move(path1, path2);
+                            }
+                        }
+                        if (HasSubDirectory(path.Text))
+                        {
+                            TreeNode node = treeView1.SelectedNode;
+                            node.Nodes.Add("XXX");
+                        }
+                        ListViewSetting(path.Text);
+                    };
+                    ctx.MenuItems.Add(menu5);
                     
-                    ctx.Show(this, new Point(e.X + ((Control)sender).Left + 20, e.Y + ((Control)sender).Top + 20));
+                    ctx.Show(this, new Point(e.X + ((Control)sender).Left, e.Y + ((Control)sender).Top));
                 }
             }
         }
@@ -631,7 +880,7 @@ namespace Explorer
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (_isLoading == true) return;
-
+            
             //정렬을 위하여 사용 됨.
             if (listView1.Sorting == SortOrder.Ascending)
                 listView1.Sorting = SortOrder.Descending;
@@ -655,6 +904,7 @@ namespace Explorer
             InitMenuCheck();
             listView1.View = View.LargeIcon;
             menuLargeIcon.Checked = true;
+            ListViewSetting(path.Text);
         }
 
         private void menuDetail_Click(object sender, EventArgs e)
@@ -662,6 +912,7 @@ namespace Explorer
             InitMenuCheck();
             listView1.View = View.Details;
             menuDetail.Checked = true;
+            ListViewSetting(path.Text);
         }
 
         private void menuList_Click(object sender, EventArgs e)
@@ -669,6 +920,7 @@ namespace Explorer
             InitMenuCheck();
             listView1.View = View.List;
             menuList.Checked = true;
+            ListViewSetting(path.Text);
         }
 
         private void menuClose_Click(object sender, EventArgs e)
@@ -680,46 +932,78 @@ namespace Explorer
         private void button2_Click(object sender, EventArgs e)
         {
             if (_isLoading == true) return;
-            try
+            if(path.Text.IndexOf("\u005C")==-1)
+            { 
+                MessageBox.Show("최상위 폴더입니다.");
+                return;
+            }
+            else
             {
                 TreeNode parentNode = treeView1.SelectedNode.Parent;
                 treeView1.SelectedNode = parentNode;
                 treeView1.SelectedNode.Collapse();
             }
-            catch
-            {
-                // 최상의 디렉토리에서는 위로가기 불가
-            }
+        }
+
+        // 경로복사
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (_isLoading == true) return;
+            Clipboard.SetText(path.Text);
         }
 
         // 새로고침
-        private void button1_Click(object sender, EventArgs e)
+        private void refresh_Click(object sender, EventArgs e)
         {
             if (_isLoading == false)
             {
-                InitImage();
-                treeView1.Nodes.Clear();
-                InitTreeDriveSetting();
+                nowTime = DateTime.Now;
+                if ((nowTime - refreshTime) < new TimeSpan(0, 0, 2))
+                {
+                    MessageBox.Show("새로고침은 2초당 1회만 가능합니다.");
+                }
+                else
+                {
+                    ListViewSetting(path.Text);
+                    refreshTime = DateTime.Now;
+                }
             }
         }
 
         // 새 폴더 생성
-        private void 폴더ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void createDir_Click(object sender, EventArgs e)
         {
-            try
+            for (; ; )
             {
-                Directory.CreateDirectory(path.Text + "\\새 폴더" + ++num);
+                if (Directory.Exists(path.Text + "\\새 폴더" + num))
+                {
+                    num++;
+                }
+                else
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(path.Text + "\\새 폴더" + num);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                    ListViewSetting(path.Text);
+                    break;
+                }
             }
-            catch
-            {
-            }
-            ListViewSetting(path.Text);
         }
 
         // 도움말 클릭 시
         private void helpbt_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("컬럼 클릭 시 정렬가능");
+            MessageBox.Show("              단축키\n\n  도움말 : F1\n  새로고침 : F5\n  새 폴더 만들기 : Ctrl+W\n  아이콘 보기 : Ctrl+I\n  자세히 보기 : Ctrl+D\n  간단히 보기 : Ctrl+L\n  종료 : Ctrl+x");
+        }
+
+        private void help_Click(object sender, EventArgs e)
+        {
+            helpbt.PerformClick();
         }
         #endregion
 
@@ -737,36 +1021,44 @@ namespace Explorer
             if (loadingBar.Value < loadingBar.Maximum)
             {
                 loadingBar.Value = loadingBar.Value + 1;
+                if (loadingBar.Maximum == loadingBar.Value)
+                    trackBar.Enabled = true;
             }
         }
 
         //아이콘 크기조절
-        private void trackBar_ValueChanged(object sender, EventArgs e)
+        private void trackBar_MouseUp(object sender, MouseEventArgs e)
         {
-            if(listView1.View != View.LargeIcon && trackBar.Value != 1)
+            if (listView1.View != View.LargeIcon)
             {
                 MessageBox.Show("보기-아이콘에서 이용가능합니다.");
-                trackBar.Value = 1;
+                trackBar.Value = 60;
                 return;
             }
 
-            switch (trackBar.Value)
+            if (trackBar.Value >= 45)
             {
-                case 0:
-                    imgLarge.ImageSize = new Size(30, 30);
-                    break;
-                case 1:
-                    imgLarge.ImageSize = new Size(45, 45);
-                    break;
-                case 2:
-                    imgLarge.ImageSize = new Size(60, 60);
-                    break;
+                size.Width = 45 + (trackBar.Value - 45);
+                size.Height = 45 + (trackBar.Value - 45);
             }
-            
-            ListViewSetting(path.Text);
-        }
-        #endregion
+            else if (trackBar.Value < 45)
+            {
+                size.Width = 45 - (45 - trackBar.Value);
+                size.Height = 45 - (45 - trackBar.Value);
+            }
 
-  
+            if (imgLarge.ImageSize == size) return;
+
+            else if (imgLarge.ImageSize != size)
+            {
+                imgLarge.ImageSize = size;
+
+                listView1.LargeImageList = imgLarge;
+                ListViewSetting(path.Text);
+            }
+        }
+
+        #endregion
+        
     }
 }

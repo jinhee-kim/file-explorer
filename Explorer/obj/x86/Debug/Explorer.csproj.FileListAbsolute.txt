@@ -1,0 +1,13 @@
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\bin\x86\Debug\Explorer.exe.config
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\bin\x86\Debug\Explorer.exe
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\bin\x86\Debug\Explorer.pdb
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\bin\x86\Debug\gl-ES\Explorer.resources.dll
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.CreateForm.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.MainForm.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.Properties.Resources.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.CreateForm.gl-ES.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.csproj.GenerateResource.Cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.csproj.CoreCompileInputs.cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\gl-ES\Explorer.resources.dll
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.exe
+C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x86\Debug\Explorer.pdb
