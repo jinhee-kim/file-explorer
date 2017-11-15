@@ -177,7 +177,9 @@ namespace Explorer
             //    return 0;
             //}
             if (sort == SortOrder.Ascending)
-                try {
+            {
+                try
+                {
                     //return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
                     return StringLogicalComparer.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
                 }
@@ -185,7 +187,9 @@ namespace Explorer
                 {
                     return 0;
                 }
-                else
+            }
+            else
+            {
                 try
                 {
                     //return String.Compare(((ListViewItem)y).SubItems[col].Text, ((ListViewItem)x).SubItems[col].Text);
@@ -195,6 +199,7 @@ namespace Explorer
                 {
                     return 0;
                 }
+            }
         }
     }
 }

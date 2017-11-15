@@ -7,7 +7,7 @@ namespace Explorer
     class GetSystemImg
     {
         [DllImport("User32.dll")]
-        public static extern int DestroyIcon(object hIcon); // 매개변수 자료형을 intPtr로 받으면 x86 디버그모드에서 디버그하지 않고 시작했을 경우 오류발생
+        public static extern int DestroyIcon(IntPtr hIcon); // 매개변수 자료형을 intPtr로 받으면 x86 디버그모드에서 디버그하지 않고 시작했을 경우 오류발생
 
         [DllImport("Shell32.dll")]
         private static extern int SHGetFileInfo(
@@ -50,7 +50,7 @@ namespace Explorer
         /// <param name="bBigSmall">큰이미지/작은이미지</param>
         /// <param name="bSelect">선택 이미지</param>
         /// <returns></returns>
-        public Icon GetIcon(String pszPath, bool bBigSmall, bool bSelect)
+        public static Icon GetIcon(String pszPath, bool bBigSmall, bool bSelect)
         {
             SHGFI uFlags;
             SHFILEINFO psfi = new SHFILEINFO();

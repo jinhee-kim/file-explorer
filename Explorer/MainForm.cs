@@ -19,13 +19,13 @@ namespace Explorer
     public partial class MainForm : Form
     {
         private bool _isLoading = false;
-        private int num = 1;
         private int itemnum = 0;
         private string copyFile;
         private string copyName;
         private string copySize;
         private bool isCopy;
         private NotifyIcon notify;
+        Stack<string> forwardStack = new Stack<string>();
         TextBox tbx;
         Size size;
 
@@ -99,14 +99,13 @@ namespace Explorer
         {
             int count;
             string[] strDrives = null;
-            GetSystemImg img = new GetSystemImg();
 
             strDrives = Directory.GetLogicalDrives();
             imgTree.Images.Clear();
 
             foreach (string drive in strDrives)
             {
-                imgTree.Images.Add(img.GetIcon(drive, false, false));
+                imgTree.Images.Add(GetSystemImg.GetIcon(drive, false, false));
 
                 count = treeView1.Nodes.Add(new TreeNode(drive.Substring(0, 2), imgTree.Images.Count - 1, imgTree.Images.Count - 1));
 
@@ -121,8 +120,8 @@ namespace Explorer
                 // What?
                 foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
-                    imgTree.Images.Add(img.GetIcon(subdirectoryInfo.FullName, false, false));
-                    imgTree.Images.Add(img.GetIcon(subdirectoryInfo.FullName, false, true));
+                    imgTree.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false, false));
+                    imgTree.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false, true));
                 }
 
                 // 초기화면 C드라이브 선택 효과
@@ -171,8 +170,6 @@ namespace Explorer
             itemnum = 0;
 
             InitImage();
-
-            GetSystemImg img = new GetSystemImg();
 
             strPath = strPath + "\\";
 
@@ -224,12 +221,12 @@ namespace Explorer
                     // 리스트뷰에 입력
                     if (listView1.View == View.LargeIcon)
                     {
-                        imgLarge.Images.Add(img.GetIcon(subdirectoryInfo.FullName, true, false));
+                        imgLarge.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, true, false));
                         count = imgLarge.Images.Count;
                     }
                     else
                     {
-                        imgSmall.Images.Add(img.GetIcon(subdirectoryInfo.FullName, false, false));
+                        imgSmall.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false, false));
                         count = imgSmall.Images.Count;
                     }
 
@@ -257,12 +254,12 @@ namespace Explorer
                     // 리스트뷰에 입력
                     if (listView1.View == View.LargeIcon)
                     {
-                        imgLarge.Images.Add(img.GetIcon(fileInfo.FullName, true, false));
+                        imgLarge.Images.Add(GetSystemImg.GetIcon(fileInfo.FullName, true, false));
                         count = imgLarge.Images.Count;
                     }
                     else
                     {
-                        imgSmall.Images.Add(img.GetIcon(fileInfo.FullName, false, false));
+                        imgSmall.Images.Add(GetSystemImg.GetIcon(fileInfo.FullName, false, false));
                         count = imgSmall.Images.Count;
                     }
 
@@ -477,9 +474,8 @@ namespace Explorer
                 if (selected.Count > 0 && listView1.GetItemAt(e.X, e.Y) != null)
                 {
                     var item = selected[0];
-                    var ctx = new ContextMenu();
-
-                    var menu0 = new MenuItem("열기");
+                    var ctx = new ContextMenuStrip();
+                    var menu0 = new ToolStripMenuItem("열기");
                     menu0.Click += (o, s) =>
                     {
                         #region 실행
@@ -523,11 +519,11 @@ namespace Explorer
                         }
                         #endregion
                     };
-                    ctx.MenuItems.Add(menu0);
+                    ctx.Items.Add(menu0);
 
-                    ctx.MenuItems.Add("-");
+                    ctx.Items.Add("-");
                     
-                    var menu3 = new MenuItem("잘라내기");
+                    var menu3 = new ToolStripMenuItem("잘라내기");
                     menu3.Click += (o, s) =>
                     {
                         isCopy = false;
@@ -535,9 +531,9 @@ namespace Explorer
                         copyName = listView1.SelectedItems[0].SubItems[0].Text;
                         copySize = listView1.SelectedItems[0].SubItems[1].Text;
                     };
-                    ctx.MenuItems.Add(menu3);
+                    ctx.Items.Add(menu3);
 
-                    var menu4 = new MenuItem("복사");
+                    var menu4 = new ToolStripMenuItem("복사");
                     menu4.Click += (o, s) =>
                     {
                         isCopy = true;
@@ -545,80 +541,83 @@ namespace Explorer
                         copyName = listView1.SelectedItems[0].SubItems[0].Text;
                         copySize = listView1.SelectedItems[0].SubItems[1].Text;
                     };
-                    ctx.MenuItems.Add(menu4);
+                    ctx.Items.Add(menu4);
 
-                    var menu5 = new MenuItem("붙여넣기");
-                    menu5.Click += (o, s) =>
-                    {
-                        if (copyFile == null)
-                        {
-                            MessageBox.Show("복사된 파일/폴더가 없습니다.");
-                            return;
-                        }
-                        if (listView1.SelectedItems[0].SubItems[1].Text.Equals("")) // 폴더일 경우
-                        {
-                            string path1 = copyFile;
-                            string path2 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text + "\\" + copyName;
+                    #region 불필요
+                    /*var menu5 = new ToolStripMenuItem("붙여넣기");
+                       menu5.Click += (o, s) =>
+                       {
+                           if (copyFile == null)
+                           {
+                               MessageBox.Show("복사된 파일/폴더가 없습니다.");
+                               return;
+                           }
+                           if (listView1.SelectedItems[0].SubItems[1].Text.Equals("")) // 폴더일 경우
+                           {
+                               string path1 = copyFile;
+                               string path2 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text + "\\" + copyName;
 
-                            if (copySize.Equals("")) // 폴더일 경우
-                            {
-                                if (Directory.Exists(path2))
-                                {
-                                    MessageBox.Show("중복된 폴더명 입니다.");
-                                    return;
-                                }
-                                try
-                                {
-                                    if (isCopy)
-                                    {
-                                        FileSystem.CopyDirectory(path1, path2);
-                                    }
-                                    else
-                                    {
-                                        FileSystem.MoveDirectory(path1, path2);
-                                    }
-                                }
-                                catch
-                                {
-                                    MessageBox.Show("대상 폴더가 원본 폴더의 하위 폴더입니다.");
-                                }
-                            }
-                            else
-                            {
-                                if (File.Exists(path2))
-                                {
-                                    MessageBox.Show("중복된 파일명 입니다.");
-                                    return;
-                                }
-                                if (isCopy)
-                                {
-                                    File.Copy(path1, path2);
-                                }
-                                else
-                                {
-                                    File.Move(path1, path2);
-                                }
-                            }
+                               if (copySize.Equals("")) // 폴더일 경우
+                               {
+                                   if (Directory.Exists(path2))
+                                   {
+                                       MessageBox.Show("중복된 폴더명 입니다.");
+                                       return;
+                                   }
+                                   try
+                                   {
+                                       if (isCopy)
+                                       {
+                                           FileSystem.CopyDirectory(path1, path2);
+                                       }
+                                       else
+                                       {
+                                           FileSystem.MoveDirectory(path1, path2);
+                                       }
+                                   }
+                                   catch
+                                   {
+                                       MessageBox.Show("대상 폴더가 원본 폴더의 하위 폴더입니다.");
+                                   }
+                               }
+                               else
+                               {
+                                   if (File.Exists(path2))
+                                   {
+                                       MessageBox.Show("중복된 파일명 입니다.");
+                                       return;
+                                   }
+                                   if (isCopy)
+                                   {
+                                       File.Copy(path1, path2);
+                                   }
+                                   else
+                                   {
+                                       File.Move(path1, path2);
+                                   }
+                               }
 
-                            if (HasSubDirectory(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text))
-                            {
-                                TreeNode node = FindNode(listView1.SelectedItems[0].SubItems[0].Text);
-                                node.Nodes.Add("XXX");
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("폴더에만 붙여넣을 수 있습니다.");
-                            return;
-                        }
-                        if (!isCopy) ListViewSetting(path.Text);
-                    };
-                    ctx.MenuItems.Add(menu5);
+                               if (HasSubDirectory(path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text))
+                               {
+                                   TreeNode node = FindNode(listView1.SelectedItems[0].SubItems[0].Text);
+                                   node.Nodes.Add("XXX");
+                               }
+                           }
+                           else
+                           {
+                               MessageBox.Show("폴더에만 붙여넣을 수 있습니다.");
+                               return;
+                           }
+                           if (!isCopy) ListViewSetting(path.Text);
+                       };
+                       ctx.Items.Add(menu5);
+                       */
+                    #endregion
 
-                    ctx.MenuItems.Add("-");
+                    ctx.Items.Add("-");
 
                     // TODO: 삭제 컨펌 창
-                    var menu6 = new MenuItem("삭제");
+                    var menu6 = new ToolStripMenuItem("삭제");
                     menu6.Click += (o, s) =>
                     {
                         if (MessageBox.Show("삭제 하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -640,9 +639,9 @@ namespace Explorer
                             ListViewSetting(path.Text);
                         }
                     };
-                    ctx.MenuItems.Add(menu6);
+                    ctx.Items.Add(menu6);
 
-                    var menu7 = new MenuItem("이름 바꾸기");
+                    var menu7 = new ToolStripMenuItem("이름 바꾸기");
                     menu7.Click += (o, s) =>
                     {
                         tbx = new TextBox();
@@ -655,18 +654,18 @@ namespace Explorer
                         tbx.LostFocus += tbx_LostFocus;
                         tbx.KeyUp += tbx_KeyUp;
                     };
-                    ctx.MenuItems.Add(menu7);
+                    ctx.Items.Add(menu7);
 
-                    ctx.MenuItems.Add("-");
+                    ctx.Items.Add("-");
 
-                    var menu8 = new MenuItem("속성");
+                    var menu8 = new ToolStripMenuItem("속성");
                     menu8.Click += (o, s) =>
                     {
                         ShowPropertiesDialog.ShowFileProperties(path.Text + "\\" + item.SubItems[0].Text);
                     };
-                    ctx.MenuItems.Add(menu8);
+                    ctx.Items.Add(menu8);
 
-                    ctx.MenuItems.Add("-");
+                    ctx.Items.Add("-");
 
                     #region 레지스트리를 이용한 확장자에 따른 추가 메뉴
                     bool isDirectory = item.SubItems[1].Text.Equals("");
@@ -695,13 +694,68 @@ namespace Explorer
                                     {
                                         foreach (string key in subKeys)
                                         {
-                                            var menuRegistry = new MenuItem();
+                                            var menuRegistry = new ToolStripMenuItem();
                                             menuRegistry.Text = key;
-                                            ctx.MenuItems.Add(menuRegistry);
+
+                                            if (key == "find" || key == "AnyCode" || key == "printto" || key == "Hwp.Print" || key == "printTo") continue;
+
+
+                                            #region 아이콘 추출
+                                                RegistryKey icon = shellKey.OpenSubKey(key);
+                                            if (icon.GetValue("icon") != null)
+                                            {
+                                                FileInfo iconFile = new FileInfo(icon.GetValue("icon").ToString());
+
+                                                if (iconFile.Exists)
+                                                {
+                                                    Icon subIcon = GetSystemImg.GetIcon(iconFile.FullName, false, false);
+                                                    menuRegistry.Image = subIcon.ToBitmap();
+                                                }
+                                            }
+
+                                            RegistryKey cmd = icon.OpenSubKey("command");
+                                            string registryPath = null;
+                                            if (cmd != null)
+                                            {
+                                                try
+                                                {
+                                                    registryPath = cmd.GetValue("").ToString();
+                                                }
+                                                catch
+                                                {
+                                                }
+                                                cmd.Close();
+                                            }
+                                            #endregion
+
                                             menuRegistry.Click += (o, s) =>
                                             {
-                                                MessageBox.Show("레지스트리 값 : " + key);
+                                                if (registryPath != null)
+                                                {
+                                                    string[] parsedPath;
+                                                    parsedPath = RegistryParsing(registryPath, (path.Text + "\\" + item.SubItems[0].Text));
+                                                    try
+                                                    {
+                                                        Process.Start(parsedPath[0], parsedPath[1]);
+                                                    }
+                                                    catch
+                                                    {
+                                                        try
+                                                        {
+                                                            Process.Start(parsedPath[0]);
+                                                        }
+                                                        catch
+                                                        {
+                                                        }
+                                                    }
+                                                }
                                             };
+
+                                            if (registryPath != null)
+                                            {
+                                                ctx.Items.Add(menuRegistry);
+                                            }
+                                            icon.Close();
                                         }
                                         shellKey.Close();
                                     }
@@ -714,6 +768,31 @@ namespace Explorer
                     ctx.Show(this, new Point(e.X + ((Control)sender).Left, e.Y + ((Control)sender).Top));
                 }
             }
+        }
+
+        // 레지스트리 경로 파싱
+        private string[] RegistryParsing(string deliveryPath, string itemPath)
+        {
+            char[] st = " ".ToCharArray();
+            string[] parsedPath;
+            
+            deliveryPath = deliveryPath.Replace("\"", "");
+            deliveryPath = deliveryPath.Replace("\'", "");
+            deliveryPath = deliveryPath.Replace("%1", itemPath);
+            deliveryPath = deliveryPath.Replace("%V", itemPath);
+            deliveryPath = deliveryPath.Replace("Program Files", "ProgramFiles");
+            deliveryPath = deliveryPath.Replace("ProgramFiles (x86)", "ProgramFiles(x86)");
+            deliveryPath = deliveryPath.Replace("Common Files", "CommonFiles");
+            deliveryPath = deliveryPath.Replace("Microsoft Shared", "MicrosoftShared");
+            parsedPath = deliveryPath.Split(st, 2);
+            for (int i = 0; i < parsedPath.Length; i++)
+            {
+                parsedPath[i] = parsedPath[i].Replace("ProgramFiles", "Program Files");
+                parsedPath[i] = parsedPath[i].Replace("Program Files(x86)", "Program Files (x86)");
+                parsedPath[i] = parsedPath[i].Replace("CommonFiles", "Common Files");
+                parsedPath[i] = parsedPath[i].Replace("MicrosoftShared", "Microsoft Shared");
+            }
+            return parsedPath;
         }
 
         // 리스트뷰 여백 우클릭 메뉴
@@ -838,18 +917,56 @@ namespace Explorer
                         {
                             if (Directory.Exists(path2))
                             {
-                                MessageBox.Show("중복된 폴더명 입니다.");
-                                return;
+                                int num = 1;
+                                for (; ; )
+                                {
+                                    path2 = path.Text + "\\copy" + num + "_" + copyName;
+                                    if (Directory.Exists(path2))
+                                    {
+                                        num++;
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            if (isCopy)
+                                            {
+                                                FileSystem.CopyDirectory(path1, path2);
+                                            }
+                                            else
+                                            {
+                                                FileSystem.MoveDirectory(path1, path2);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            return;
+                                        }
+                                        ListViewSetting(path.Text);
+                                        treeView1.SelectedNode.Collapse();
+                                        treeView1.SelectedNode.Expand();
+                                        return;
+                                    }
+                                }
                             }
                             try
                             {
                                 if (isCopy)
                                 {
                                     FileSystem.CopyDirectory(path1, path2);
+                                    //if (HasSubDirectory(path.Text))
+                                    //{
+                                    //    TreeNode node = treeView1.SelectedNode;
+                                    //    node.Nodes.Add("XXX");
+                                    //}
+                                    treeView1.SelectedNode.Collapse();
+                                    treeView1.SelectedNode.Expand();
                                 }
                                 else
                                 {
                                     FileSystem.MoveDirectory(path1, path2);
+                                    treeView1.SelectedNode.Collapse();
+                                    treeView1.SelectedNode.Expand();
                                 }
                             }
                             catch
@@ -861,8 +978,37 @@ namespace Explorer
                         {
                             if (File.Exists(path2))
                             {
-                                MessageBox.Show("중복된 파일명 입니다.");
-                                return;
+                                int num = 1;
+                                for (; ; )
+                                {
+                                    path2 = path.Text + "\\copy" + num + "_" + copyName;
+                                    if (File.Exists(path2))
+                                    {
+                                        num++;
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            if (isCopy)
+                                            {
+                                                File.Copy(path1, path2);
+                                            }
+                                            else
+                                            {
+                                                File.Move(path1, path2);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            return;
+                                        }
+                                        ListViewSetting(path.Text);
+                                        treeView1.SelectedNode.Collapse();
+                                        treeView1.SelectedNode.Expand();
+                                        return;
+                                    }
+                                }
                             }
                             if (isCopy)
                             {
@@ -872,11 +1018,6 @@ namespace Explorer
                             {
                                 File.Move(path1, path2);
                             }
-                        }
-                        if (HasSubDirectory(path.Text))
-                        {
-                            TreeNode node = treeView1.SelectedNode;
-                            node.Nodes.Add("XXX");
                         }
                         ListViewSetting(path.Text);
                     };
@@ -925,6 +1066,8 @@ namespace Explorer
             }
             
             ListViewSetting(path.Text);
+            treeView1.SelectedNode.Collapse();
+            treeView1.SelectedNode.Expand();
 
             tbx.Dispose();
         }
@@ -981,20 +1124,35 @@ namespace Explorer
             this.Close();
         }
 
-        // 위로가기
+        // 뒤로가기
         private void button2_Click(object sender, EventArgs e)
         {
             if (_isLoading == true) return;
             if(path.Text.IndexOf("\u005C")==-1)
             { 
-                MessageBox.Show("최상위 폴더입니다.");
+                //MessageBox.Show("최상위 폴더입니다.");
                 return;
             }
             else
             {
+                forwardStack.Push(treeView1.SelectedNode.Text);
                 TreeNode parentNode = treeView1.SelectedNode.Parent;
                 treeView1.SelectedNode = parentNode;
                 treeView1.SelectedNode.Collapse();
+            }
+        }
+
+        // 앞으로가기
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                treeView1.SelectedNode.Collapse();
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode(forwardStack.Pop());
+            }
+            catch
+            {
             }
         }
 
@@ -1017,6 +1175,7 @@ namespace Explorer
         // 새 폴더 생성
         private void createDir_Click(object sender, EventArgs e)
         {
+            int num = 1;
             for (; ; )
             {
                 if (Directory.Exists(path.Text + "\\새 폴더" + num))
@@ -1034,6 +1193,8 @@ namespace Explorer
                         return;
                     }
                     ListViewSetting(path.Text);
+                    treeView1.SelectedNode.Collapse();
+                    treeView1.SelectedNode.Expand();
                     break;
                 }
             }
@@ -1114,6 +1275,7 @@ namespace Explorer
 
 
         #endregion
+        
         
     }
 }

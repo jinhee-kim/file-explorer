@@ -24,3 +24,16 @@ C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.csproj
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\gl-ES\Explorer.resources.dll
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.exe
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.pdb
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.exe.config
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.exe
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.pdb
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\x64\Release\gl-ES\Explorer.resources.dll
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.CreateForm.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.MainForm.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.Properties.Resources.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.CreateForm.gl-ES.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.csproj.GenerateResource.Cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.csproj.CoreCompileInputs.cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\gl-ES\Explorer.resources.dll
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.exe
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.pdb
