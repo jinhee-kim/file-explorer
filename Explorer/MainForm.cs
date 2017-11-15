@@ -120,6 +120,11 @@ namespace Explorer
                 // What?
                 foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
+                    if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        continue; // 숨긴폴더 사전제거
+                    }
+
                     imgTree.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false, false));
                     imgTree.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false, true));
                 }
@@ -637,6 +642,8 @@ namespace Explorer
                                 File.Delete(path.Text + "\\" + item.SubItems[0].Text);
                             }
                             ListViewSetting(path.Text);
+                            treeView1.SelectedNode.Collapse();
+                            treeView1.SelectedNode.Expand();
                         }
                     };
                     ctx.Items.Add(menu6);
@@ -736,7 +743,7 @@ namespace Explorer
                                                     parsedPath = RegistryParsing(registryPath, (path.Text + "\\" + item.SubItems[0].Text));
                                                     try
                                                     {
-                                                        Process.Start(parsedPath[0], parsedPath[1]);
+                                                        Process.Start('\"' + parsedPath[0] + '\"', parsedPath[1]);
                                                     }
                                                     catch
                                                     {
@@ -778,8 +785,8 @@ namespace Explorer
             
             deliveryPath = deliveryPath.Replace("\"", "");
             deliveryPath = deliveryPath.Replace("\'", "");
-            deliveryPath = deliveryPath.Replace("%1", itemPath);
-            deliveryPath = deliveryPath.Replace("%V", itemPath);
+            deliveryPath = deliveryPath.Replace("%1", '\"'+ itemPath+'\"');
+            deliveryPath = deliveryPath.Replace("%V", '\"' + itemPath + '\"');
             deliveryPath = deliveryPath.Replace("Program Files", "ProgramFiles");
             deliveryPath = deliveryPath.Replace("ProgramFiles (x86)", "ProgramFiles(x86)");
             deliveryPath = deliveryPath.Replace("Common Files", "CommonFiles");
