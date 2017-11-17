@@ -1,14 +1,10 @@
 C:\Users\Administrator\Desktop\Explorer\Explorer\bin\Release\Explorer.exe.config
 C:\Users\Administrator\Desktop\Explorer\Explorer\bin\Release\Explorer.exe
 C:\Users\Administrator\Desktop\Explorer\Explorer\bin\Release\Explorer.pdb
-C:\Users\Administrator\Desktop\Explorer\Explorer\bin\Release\gl-ES\Explorer.resources.dll
-C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.CreateForm.resources
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.MainForm.resources
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.Properties.Resources.resources
-C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.CreateForm.gl-ES.resources
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.csproj.GenerateResource.Cache
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.csproj.CoreCompileInputs.cache
-C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\gl-ES\Explorer.resources.dll
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.exe
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.pdb
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Release\Explorer.csprojResolveAssemblyReference.cache

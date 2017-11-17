@@ -30,6 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("바탕 화면", 1, 1);
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("다운로드", 2, 2);
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("문서", 8, 8);
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("즐겨찾기", 0, 0, new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3});
             this.panel1 = new System.Windows.Forms.Panel();
             this.helpbt = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -61,8 +68,6 @@
             this.imgSmall = new System.Windows.Forms.ImageList(this.components);
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.imgTree = new System.Windows.Forms.ImageList(this.components);
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.splitter1 = new System.Windows.Forms.Splitter();
             this.loadingBar = new System.Windows.Forms.ProgressBar();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.helpmenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,11 +76,15 @@
             this.status_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.status = new System.Windows.Forms.StatusStrip();
             this.label2 = new System.Windows.Forms.Label();
+            this.favoriteView = new System.Windows.Forms.TreeView();
+            this.imgFavorite = new System.Windows.Forms.ImageList(this.components);
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
             this.status.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -298,7 +307,11 @@
             // listView1
             // 
             this.listView1.AllowDrop = true;
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.BackColor = System.Drawing.SystemColors.Window;
+            this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -307,14 +320,13 @@
             this.columnHeader5,
             this.columnHeader6});
             this.listView1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.FullRowSelect = true;
             this.listView1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.listView1.LargeImageList = this.imgLarge;
-            this.listView1.Location = new System.Drawing.Point(263, 52);
+            this.listView1.Location = new System.Drawing.Point(277, 52);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(794, 589);
+            this.listView1.Size = new System.Drawing.Size(780, 570);
             this.listView1.SmallImageList = this.imgSmall;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -346,7 +358,7 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "수정한 날짜";
-            this.columnHeader4.Width = 273;
+            this.columnHeader4.Width = 260;
             // 
             // columnHeader5
             // 
@@ -356,7 +368,7 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "속성";
-            this.columnHeader6.Width = 100;
+            this.columnHeader6.Width = 0;
             // 
             // imgLarge
             // 
@@ -372,39 +384,30 @@
             // 
             // treeView1
             // 
+            this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.BackColor = System.Drawing.SystemColors.Window;
+            this.treeView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treeView1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.treeView1.ImageIndex = 0;
             this.treeView1.ImageList = this.imgTree;
-            this.treeView1.Location = new System.Drawing.Point(0, 52);
+            this.treeView1.Location = new System.Drawing.Point(-1, 68);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(263, 589);
+            this.treeView1.Size = new System.Drawing.Size(278, 501);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // imgTree
             // 
-            this.imgTree.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imgTree.ImageSize = new System.Drawing.Size(16, 16);
+            this.imgTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgTree.ImageStream")));
             this.imgTree.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // imageList1
-            // 
-            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(263, 52);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 589);
-            this.splitter1.TabIndex = 4;
-            this.splitter1.TabStop = false;
+            this.imgTree.Images.SetKeyName(0, "desktop2.ico");
+            this.imgTree.Images.SetKeyName(1, "down2.png");
+            this.imgTree.Images.SetKeyName(2, "favorite.ico");
+            this.imgTree.Images.SetKeyName(3, "note2.ico");
             // 
             // loadingBar
             // 
@@ -459,9 +462,9 @@
             // 
             this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.status_txt});
-            this.status.Location = new System.Drawing.Point(266, 619);
+            this.status.Location = new System.Drawing.Point(0, 619);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(791, 22);
+            this.status.Size = new System.Drawing.Size(1057, 22);
             this.status.TabIndex = 5;
             this.status.Text = "statusStrip1";
             // 
@@ -476,20 +479,74 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "| ";
             // 
+            // favoriteView
+            // 
+            this.favoriteView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.favoriteView.ImageIndex = 0;
+            this.favoriteView.ImageList = this.imgFavorite;
+            this.favoriteView.Location = new System.Drawing.Point(-1, 2);
+            this.favoriteView.Name = "favoriteView";
+            treeNode1.ImageIndex = 1;
+            treeNode1.Name = "노드1";
+            treeNode1.SelectedImageIndex = 1;
+            treeNode1.Text = "바탕 화면";
+            treeNode2.ImageIndex = 2;
+            treeNode2.Name = "노드0";
+            treeNode2.SelectedImageIndex = 2;
+            treeNode2.Text = "다운로드";
+            treeNode3.ImageIndex = 8;
+            treeNode3.Name = "노드1";
+            treeNode3.SelectedImageIndex = 8;
+            treeNode3.Text = "문서";
+            treeNode4.ImageIndex = 0;
+            treeNode4.Name = "노드0";
+            treeNode4.SelectedImageIndex = 0;
+            treeNode4.Text = "즐겨찾기";
+            this.favoriteView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode4});
+            this.favoriteView.SelectedImageIndex = 0;
+            this.favoriteView.Size = new System.Drawing.Size(278, 64);
+            this.favoriteView.TabIndex = 10;
+            this.favoriteView.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.favoriteView_AfterCollapse);
+            this.favoriteView.DoubleClick += new System.EventHandler(this.favoriteView_DoubleClick);
+            // 
+            // imgFavorite
+            // 
+            this.imgFavorite.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgFavorite.ImageStream")));
+            this.imgFavorite.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgFavorite.Images.SetKeyName(0, "imageres_1024.ico");
+            this.imgFavorite.Images.SetKeyName(1, "#110.ico");
+            this.imgFavorite.Images.SetKeyName(2, "arrow-down-icon-2.png");
+            this.imgFavorite.Images.SetKeyName(3, "#112.ico");
+            this.imgFavorite.Images.SetKeyName(4, "#123.ico");
+            this.imgFavorite.Images.SetKeyName(5, "#183.ico");
+            this.imgFavorite.Images.SetKeyName(6, "#184.ico");
+            this.imgFavorite.Images.SetKeyName(7, "imageres_109.ico");
+            this.imgFavorite.Images.SetKeyName(8, "Windows 9 Icons (29).ico");
+            // 
+            // panel3
+            // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.treeView1);
+            this.panel3.Controls.Add(this.favoriteView);
+            this.panel3.Location = new System.Drawing.Point(0, 52);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(278, 570);
+            this.panel3.TabIndex = 11;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1057, 641);
+            this.Controls.Add(this.status);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.loadingBar);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.trackBar);
-            this.Controls.Add(this.status);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.listView1);
-            this.Controls.Add(this.treeView1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -506,6 +563,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.status.ResumeLayout(false);
             this.status.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -520,8 +578,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ImageList imgLarge;
         private System.Windows.Forms.ImageList imgSmall;
-        private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.ToolStripMenuItem helpmenu;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -554,6 +610,9 @@
         private System.Windows.Forms.ToolStripMenuItem trayMode;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.TreeView favoriteView;
+        private System.Windows.Forms.ImageList imgFavorite;
+        private System.Windows.Forms.Panel panel3;
     }
 }
 

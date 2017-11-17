@@ -21,10 +21,10 @@ namespace Explorer
         private string copyName;
         private string copySize;
         private string copyAttribute;
+        private string userName;
 
         private Stack<string> forwardStack = new Stack<string>();
         private ListViewItem dragMove;
-        private GraphicsPath changeCircle;
         private NotifyIcon notify;
         private TextBox tbx;
         private Size size;
@@ -33,18 +33,14 @@ namespace Explorer
         #region Constructor
         public MainForm()
         {
+            
             InitializeComponent();
-
+            
             this._isLoading = false;
             this.itemNum = 0;
+            this.userName = Environment.UserName;
 
             InitTreeDriveSetting();
-
-            #region 원형 아이콘 
-            changeCircle = new GraphicsPath();
-            changeCircle.AddEllipse(helpbt.DisplayRectangle);
-            helpbt.Region = new Region(changeCircle);
-            #endregion
             
             listView1.DoubleBuffered(true);
             toolTip1.SetToolTip(helpbt, "도움말");
@@ -93,7 +89,6 @@ namespace Explorer
             imgTree.Images.Clear();
             InitImage();
             
-
             foreach (string drive in strDrives)
             {
                 imgTree.Images.Add(GetSystemImg.GetIcon(drive, false));
@@ -113,13 +108,15 @@ namespace Explorer
                     {
                         continue; // 숨긴폴더 사전제거
                     }
-
                     imgTree.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false));
                 }
-
-                // 초기화면 C드라이브 선택 효과
-                treeView1.SelectedNode = treeView1.Nodes[0];
             }
+
+            // 초기화면 C드라이브 선택 효과
+            favoriteView.SelectedNode = favoriteView.Nodes[0];
+            favoriteView.SelectedNode.Expand();
+            treeView1.SelectedNode = treeView1.Nodes[0];
+            treeView1.SelectedNode.Expand();
         }
 
         // 하위 폴더 렌더링
@@ -473,7 +470,7 @@ namespace Explorer
                             {
                                 try
                                 {
-                                FileSystem.DeleteDirectory(path.Text + "\\" + item.SubItems[0].Text, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
+                                    FileSystem.DeleteDirectory(path.Text + "\\" + item.SubItems[0].Text, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
                                 }
                                 catch
                                 {
@@ -1152,6 +1149,7 @@ namespace Explorer
         // 종료
         private void menuClose_Click(object sender, EventArgs e)
         {
+            this.Dispose();
             this.Close();
         }
 
@@ -1456,6 +1454,53 @@ namespace Explorer
                 this.Show();
                 notify.Visible = false;
             };
+        }
+        #endregion
+
+        #region favoriteView Event
+        private void favoriteView_DoubleClick(object sender, EventArgs e)
+        {
+            Point p = favoriteView.PointToClient(MousePosition);
+            TreeNode selectedNode = favoriteView.GetNodeAt(p.X, p.Y);
+
+            if (selectedNode.Text.Equals("바탕 화면"))
+            {
+                treeView1.Nodes[0].Collapse();
+                treeView1.Nodes[0].Expand();
+
+                treeView1.SelectedNode = FindNode("Users");
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode(userName);
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode("Desktop");
+            }
+            else if (selectedNode.Text.Equals("다운로드"))
+            {
+                treeView1.Nodes[0].Collapse();
+                treeView1.Nodes[0].Expand();
+
+                treeView1.SelectedNode = FindNode("Users");
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode(userName);
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode("Downloads");
+            }
+            else if (selectedNode.Text.Equals("문서"))
+            {
+                treeView1.Nodes[0].Collapse();
+                treeView1.Nodes[0].Expand();
+
+                treeView1.SelectedNode = FindNode("Users");
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode(userName);
+                treeView1.SelectedNode.Expand();
+                treeView1.SelectedNode = FindNode("Documents");
+            }
+        }
+        
+        private void favoriteView_AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            favoriteView.SelectedNode.Expand();
         }
         #endregion
     }

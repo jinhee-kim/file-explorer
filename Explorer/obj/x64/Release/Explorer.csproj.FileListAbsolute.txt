@@ -14,14 +14,10 @@ C:\Users\hee38407\Desktop\Explorer\Explorer\Explorer\obj\x64\Release\Explorer.pd
 C:\Users\Administrator\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.exe.config
 C:\Users\Administrator\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.exe
 C:\Users\Administrator\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.pdb
-C:\Users\Administrator\Desktop\Explorer\Explorer\bin\x64\Release\gl-ES\Explorer.resources.dll
-C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.CreateForm.resources
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.MainForm.resources
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.Properties.Resources.resources
-C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.CreateForm.gl-ES.resources
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.csproj.GenerateResource.Cache
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.csproj.CoreCompileInputs.cache
-C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\gl-ES\Explorer.resources.dll
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.exe
 C:\Users\Administrator\Desktop\Explorer\Explorer\obj\x64\Release\Explorer.pdb
 C:\Users\hee38407\Desktop\Explorer\Explorer\bin\x64\Release\Explorer.exe.config
