@@ -7,15 +7,15 @@ namespace Explorer
     class GetSystemImg
     {
         [DllImport("User32.dll")]
-        public static extern int DestroyIcon(IntPtr hIcon); // 매개변수 자료형을 intPtr로 받으면 x86 디버그모드에서 디버그하지 않고 시작했을 경우 오류발생
+        public static extern int DestroyIcon(IntPtr hIcon);
 
         [DllImport("Shell32.dll")]
         private static extern int SHGetFileInfo(
-                string pszPath,         // 경로 버퍼
+                string pszPath,        // 경로 버퍼
                 uint dwFileAttributes,  // 파일 속성의 조합
-                out SHFILEINFO psfi,    // 구조체의 주소(반환값)
-                uint cbFileInfo,        // 위 구조체의 크기
-                SHGFI uFlags            // 이 플래그에 의해서 함수의 행동과 정보가 결정됨.
+                out SHFILEINFO psfi,   // 구조체의 주소(반환값)
+                uint cbFileInfo,       // 위 구조체의 크기
+                SHGFI uFlags          // 이 플래그에 의해서 함수의 행동과 정보가 결정됨.
                 );
 
         [StructLayout(LayoutKind.Sequential)]
@@ -42,32 +42,35 @@ namespace Explorer
             SysIconIndex = 0x00004000,
             LinkOverlay = 0x00008000
         }
-        
+
         /// <summary>
         /// 파일/폴더 이미지 얻기
         /// </summary>
         /// <param name="pszPath">파일/폴더 경로</param>
         /// <param name="bBigSmall">큰이미지/작은이미지</param>
-        /// <param name="bSelect">선택 이미지</param>
-        /// <returns></returns>
-        public static Icon GetIcon(String pszPath, bool bBigSmall, bool bSelect)
+        /// <returns>아이콘</returns>
+        public static Icon GetIcon(String pszPath, bool bBigSmall)
         {
             SHGFI uFlags;
             SHFILEINFO psfi = new SHFILEINFO();
             int cbFileInfo = Marshal.SizeOf(psfi);
 
             if (bBigSmall)
+            {
                 uFlags = SHGFI.Icon | SHGFI.LargeIcon;
+            }
             else
+            {
                 uFlags = SHGFI.Icon | SHGFI.SmallIcon;
-
-            if (bSelect)
-                uFlags = uFlags | SHGFI.SelectIcon;
+            }
 
             // 폴더/파일 아이콘 얻기
             SHGetFileInfo(pszPath, 256, out psfi, (uint)cbFileInfo, uFlags);
+
             Icon icon = (Icon)Icon.FromHandle(psfi.hIcon).Clone();
+
             DestroyIcon(psfi.hIcon); // 메모리 관리
+
             // 아이콘 형식으로 반환
             return icon;
         }

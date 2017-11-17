@@ -40,3 +40,13 @@ C:\Users\Administrator\Desktop\dev\Explorer\Explorer\obj\Release\Explorer.csproj
 C:\Users\Administrator\Desktop\dev\Explorer\Explorer\obj\Release\gl-ES\Explorer.resources.dll
 C:\Users\Administrator\Desktop\dev\Explorer\Explorer\obj\Release\Explorer.exe
 C:\Users\Administrator\Desktop\dev\Explorer\Explorer\obj\Release\Explorer.pdb
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\Release\Explorer.exe.config
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\Release\Explorer.exe
+C:\Users\hee38407\Desktop\Explorer\Explorer\bin\Release\Explorer.pdb
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.csprojResolveAssemblyReference.cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.MainForm.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.Properties.Resources.resources
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.csproj.GenerateResource.Cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.csproj.CoreCompileInputs.cache
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.exe
+C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Release\Explorer.pdb
