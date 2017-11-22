@@ -1304,7 +1304,7 @@ namespace Explorer
         // 도움말 클릭 시
         private void helpbt_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("               단축키\n\n  도움말 : F1\n  새로고침 : F5\n  트레이 모드 : Ctrl+T\n  새 폴더 만들기 : Ctrl+W\n  아이콘 보기 : Ctrl+I\n  자세히 보기 : Ctrl+D\n  간단히 보기 : Ctrl+L\n  종료 : Ctrl+x");
+            MessageBox.Show("               -단축키-\n\n  도움말             :  F1\n  새로고침          :  F5\n  트레이 모드      :  Ctrl+T\n  새 폴더 만들기  :  Ctrl+W\n  아이콘 보기      :  Ctrl+I\n  자세히 보기      :  Ctrl+D\n  간단히 보기      :  Ctrl+L\n  종료                :  Ctrl+x");
         }
 
         private void help_Click(object sender, EventArgs e)
