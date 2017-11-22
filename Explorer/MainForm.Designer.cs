@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("바탕 화면", 1, 1);
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("다운로드", 2, 2);
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("문서", 8, 8);
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("문서", 3, 3);
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("즐겨찾기", 0, 0, new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
@@ -211,6 +211,8 @@
             // 
             // function
             // 
+            this.function.Checked = true;
+            this.function.CheckState = System.Windows.Forms.CheckState.Checked;
             this.function.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refresh});
             this.function.Name = "function";
@@ -221,7 +223,7 @@
             // 
             this.refresh.Name = "refresh";
             this.refresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.refresh.Size = new System.Drawing.Size(142, 22);
+            this.refresh.Size = new System.Drawing.Size(152, 22);
             this.refresh.Text = "새로고침";
             this.refresh.Click += new System.EventHandler(this.refresh_Click);
             // 
@@ -404,10 +406,7 @@
             // 
             this.imgTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgTree.ImageStream")));
             this.imgTree.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgTree.Images.SetKeyName(0, "desktop2.ico");
-            this.imgTree.Images.SetKeyName(1, "down2.png");
-            this.imgTree.Images.SetKeyName(2, "favorite.ico");
-            this.imgTree.Images.SetKeyName(3, "note2.ico");
+            this.imgTree.Images.SetKeyName(0, "4.png");
             // 
             // loadingBar
             // 
@@ -445,7 +444,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.Control;
-            this.label1.Location = new System.Drawing.Point(540, 625);
+            this.label1.Location = new System.Drawing.Point(540, 624);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 8;
@@ -473,7 +472,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.SystemColors.Control;
-            this.label2.Location = new System.Drawing.Point(818, 625);
+            this.label2.Location = new System.Drawing.Point(818, 624);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(15, 12);
             this.label2.TabIndex = 9;
@@ -494,9 +493,9 @@
             treeNode2.Name = "노드0";
             treeNode2.SelectedImageIndex = 2;
             treeNode2.Text = "다운로드";
-            treeNode3.ImageIndex = 8;
+            treeNode3.ImageIndex = 3;
             treeNode3.Name = "노드1";
-            treeNode3.SelectedImageIndex = 8;
+            treeNode3.SelectedImageIndex = 3;
             treeNode3.Text = "문서";
             treeNode4.ImageIndex = 0;
             treeNode4.Name = "노드0";
@@ -514,15 +513,10 @@
             // 
             this.imgFavorite.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgFavorite.ImageStream")));
             this.imgFavorite.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgFavorite.Images.SetKeyName(0, "imageres_1024.ico");
-            this.imgFavorite.Images.SetKeyName(1, "#110.ico");
-            this.imgFavorite.Images.SetKeyName(2, "arrow-down-icon-2.png");
-            this.imgFavorite.Images.SetKeyName(3, "#112.ico");
-            this.imgFavorite.Images.SetKeyName(4, "#123.ico");
-            this.imgFavorite.Images.SetKeyName(5, "#183.ico");
-            this.imgFavorite.Images.SetKeyName(6, "#184.ico");
-            this.imgFavorite.Images.SetKeyName(7, "imageres_109.ico");
-            this.imgFavorite.Images.SetKeyName(8, "Windows 9 Icons (29).ico");
+            this.imgFavorite.Images.SetKeyName(0, "0.png");
+            this.imgFavorite.Images.SetKeyName(1, "1.png");
+            this.imgFavorite.Images.SetKeyName(2, "2.png");
+            this.imgFavorite.Images.SetKeyName(3, "3.png");
             // 
             // panel3
             // 
@@ -540,13 +534,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1057, 641);
-            this.Controls.Add(this.status);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.listView1);
             this.Controls.Add(this.loadingBar);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.trackBar);
+            this.Controls.Add(this.status);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;

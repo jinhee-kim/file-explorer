@@ -153,6 +153,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="foldericon.ico" />
+    <None Include="Resources\4.png" />
+    <None Include="Resources\3.png" />
+    <None Include="Resources\2.png" />
+    <None Include="Resources\1.png" />
+    <None Include="Resources\0.png" />
     <None Include="Resources\forward.png" />
     <None Include="Resources\backward.png" />
     <None Include="Resources\foldericon.ico" />

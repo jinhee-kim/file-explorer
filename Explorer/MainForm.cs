@@ -22,6 +22,8 @@ namespace Explorer
         private string copySize;
         private string copyAttribute;
         private string userName;
+        private string desktopDirectoryPath;
+        private string[] splitDesktopDirectoryPath;
 
         private Stack<string> forwardStack = new Stack<string>();
         private ListViewItem dragMove;
@@ -38,7 +40,9 @@ namespace Explorer
             
             this._isLoading = false;
             this.itemNum = 0;
-            this.userName = Environment.UserName;
+            this.desktopDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            this.splitDesktopDirectoryPath = desktopDirectoryPath.Split('\\');
+            this.userName = splitDesktopDirectoryPath[2];
 
             InitTreeDriveSetting();
             
@@ -85,8 +89,7 @@ namespace Explorer
             string[] strDrives = null;
 
             strDrives = Directory.GetLogicalDrives();
-
-            imgTree.Images.Clear();
+            
             InitImage();
             
             foreach (string drive in strDrives)
@@ -98,17 +101,6 @@ namespace Explorer
                 if (HasSubDirectory(drive.Substring(0, 2)))
                 {
                     treeView1.Nodes[count].Nodes.Add("XXX");
-                }
-
-                DirectoryInfo directoryInfo = new DirectoryInfo(@"C:\");
-
-                foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
-                {
-                    if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-                    {
-                        continue; // 숨긴폴더 사전제거
-                    }
-                    imgTree.Images.Add(GetSystemImg.GetIcon(subdirectoryInfo.FullName, false));
                 }
             }
 
@@ -132,21 +124,36 @@ namespace Explorer
             // 폴더 정보
             try
             {
+                treeView1.BeginUpdate(); // 업데이트가 끝날 때까지 UI 갱신 중지
+                listView1.BeginUpdate();
+                trackBar.Enabled = false;
+                this.KeyPreview = false;
+
                 // 폴더 정보를 얻기
                 foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
+                    if (subdirectoryInfo.Name == "Fonts" || subdirectoryInfo.Name == "assembly")
+                    {
+                        continue; // Fonts폴더를 열 수 없어 우선 배제처리
+                    }
+
                     if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                     {
                         continue; // 숨긴폴더 사전제거
                     }
 
-                    count = node.Nodes.Add(new TreeNode(subdirectoryInfo.Name, imgTree.Images.Count - 1, imgTree.Images.Count - 1));
+                    count = node.Nodes.Add(new TreeNode(subdirectoryInfo.Name, 0, 0));
 
                     if (HasSubDirectory(node.Nodes[count].FullPath))
                     {
                         node.Nodes[count].Nodes.Add("XXX");
                     }
                 }
+
+                treeView1.EndUpdate(); // 업데이트 종료
+                listView1.EndUpdate();
+                trackBar.Enabled = true;
+                this.KeyPreview = true;
             }
             catch
             {
@@ -455,8 +462,8 @@ namespace Explorer
                     var menu6 = new ToolStripMenuItem("삭제");
                     menu6.Click += (o, s) =>
                     {
-                        //if (MessageBox.Show("삭제 하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                        //{
+                        if (MessageBox.Show("삭제 하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
                             string strSel;
                             string strSize;
                             string strAttribute;
@@ -491,7 +498,7 @@ namespace Explorer
                             ListViewSetting(path.Text);
                             treeView1.SelectedNode.Collapse();
                             treeView1.SelectedNode.Expand();
-                        //}
+                        }
                     };
                     ctx.Items.Add(menu6);
 
@@ -622,6 +629,7 @@ namespace Explorer
                     ctx.Show(this, new Point(e.X + ((Control)sender).Left, e.Y + ((Control)sender).Top));
                 }
             }
+                
         }
 
         // 리스트뷰 여백 우클릭 메뉴
@@ -754,6 +762,7 @@ namespace Explorer
                             if (Directory.Exists(path2))
                             {
                                 int num = 1;
+                                string name;
                                 for (; ; )
                                 {
                                     path2 = path.Text + "\\overlap" + num + "_" + copyName;
@@ -778,15 +787,21 @@ namespace Explorer
                                         {
                                             return;
                                         }
-                                        ListViewSetting(path.Text);
-                                        treeView1.SelectedNode.Collapse();
+
+                                        name = treeView1.SelectedNode.Text;
+                                        treeView1.SelectedNode.Parent.Collapse();
                                         treeView1.SelectedNode.Expand();
+                                        treeView1.SelectedNode = FindNode(name);
+                                        treeView1.SelectedNode.Expand();
+
                                         return;
                                     }
                                 }
                             }
                             try
                             {
+                                string name;
+
                                 if (isCopy)
                                 {
                                     FileSystem.CopyDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
@@ -795,13 +810,21 @@ namespace Explorer
                                     //    TreeNode node = treeView1.SelectedNode;
                                     //    node.Nodes.Add("XXX");
                                     //}
-                                    treeView1.SelectedNode.Collapse();
+
+                                    name = treeView1.SelectedNode.Text;
+                                    treeView1.SelectedNode.Parent.Collapse();
+                                    treeView1.SelectedNode.Expand();
+                                    treeView1.SelectedNode = FindNode(name);
                                     treeView1.SelectedNode.Expand();
                                 }
                                 else
                                 {
                                     FileSystem.MoveDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
-                                    treeView1.SelectedNode.Collapse();
+
+                                    name = treeView1.SelectedNode.Text;
+                                    treeView1.SelectedNode.Parent.Collapse();
+                                    treeView1.SelectedNode.Expand();
+                                    treeView1.SelectedNode = FindNode(name);
                                     treeView1.SelectedNode.Expand();
                                 }
                             }
@@ -968,11 +991,12 @@ namespace Explorer
                 // 폴더 정보를 얻기
                 foreach (DirectoryInfo subdirectoryInfo in directoryInfo.GetDirectories())
                 {
-                    if (subdirectoryInfo.Name == "Fonts")
+                    if (subdirectoryInfo.Name == "Fonts" || subdirectoryInfo.Name == "assembly")
                     {
                         Loading();
                         continue; // Fonts폴더를 열 수 없어 우선 배제처리
                     }
+
                     if ((subdirectoryInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                     {
                         Loading();
@@ -1189,6 +1213,7 @@ namespace Explorer
             }
             catch
             {
+                treeView1.SelectedNode.Collapse();
             }
         }
 
@@ -1213,6 +1238,8 @@ namespace Explorer
         {
             if (_isLoading == true) return;
             int num = 1;
+            string name;
+
             for (; ; )
             {
                 if (Directory.Exists(path.Text + "\\새 폴더" + num))
@@ -1229,9 +1256,12 @@ namespace Explorer
                     {
                         return;
                     }
-                    ListViewSetting(path.Text);
-                    treeView1.SelectedNode.Collapse();
+                    name = treeView1.SelectedNode.Text;
+                    treeView1.SelectedNode.Parent.Collapse();
                     treeView1.SelectedNode.Expand();
+                    treeView1.SelectedNode = FindNode(name);
+                    treeView1.SelectedNode.Expand();
+
                     break;
                 }
             }
