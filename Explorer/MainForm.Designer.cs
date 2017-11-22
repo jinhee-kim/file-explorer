@@ -223,7 +223,7 @@
             // 
             this.refresh.Name = "refresh";
             this.refresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.refresh.Size = new System.Drawing.Size(152, 22);
+            this.refresh.Size = new System.Drawing.Size(142, 22);
             this.refresh.Text = "새로고침";
             this.refresh.Click += new System.EventHandler(this.refresh_Click);
             // 
@@ -520,6 +520,8 @@
             // 
             // panel3
             // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.treeView1);
             this.panel3.Controls.Add(this.favoriteView);
