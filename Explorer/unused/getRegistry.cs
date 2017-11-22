@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Explorer
 {
-    class getRegistry
+    class GetRegistry
     {
         /* unused
         public static void getreg(string extension)

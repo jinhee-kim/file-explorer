@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Microsoft.VisualBasic.FileIO;
@@ -788,11 +787,20 @@ namespace Explorer
                                             return;
                                         }
 
-                                        name = treeView1.SelectedNode.Text;
-                                        treeView1.SelectedNode.Parent.Collapse();
-                                        treeView1.SelectedNode.Expand();
-                                        treeView1.SelectedNode = FindNode(name);
-                                        treeView1.SelectedNode.Expand();
+                                        try
+                                        {
+                                            name = treeView1.SelectedNode.Text;
+                                            treeView1.SelectedNode.Parent.Collapse();
+                                            treeView1.SelectedNode.Expand();
+                                            treeView1.SelectedNode = FindNode(name);
+                                            treeView1.SelectedNode.Expand();
+                                        }
+                                        catch
+                                        {
+                                            ListViewSetting(path.Text);
+                                            treeView1.SelectedNode.Collapse();
+                                            treeView1.SelectedNode.Expand();
+                                        }
 
                                         return;
                                     }
@@ -810,21 +818,24 @@ namespace Explorer
                                     //    TreeNode node = treeView1.SelectedNode;
                                     //    node.Nodes.Add("XXX");
                                     //}
+                                }
+                                else
+                                {
+                                    FileSystem.MoveDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+                                }
 
+                                try
+                                {
                                     name = treeView1.SelectedNode.Text;
                                     treeView1.SelectedNode.Parent.Collapse();
                                     treeView1.SelectedNode.Expand();
                                     treeView1.SelectedNode = FindNode(name);
                                     treeView1.SelectedNode.Expand();
                                 }
-                                else
+                                catch
                                 {
-                                    FileSystem.MoveDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
-
-                                    name = treeView1.SelectedNode.Text;
-                                    treeView1.SelectedNode.Parent.Collapse();
-                                    treeView1.SelectedNode.Expand();
-                                    treeView1.SelectedNode = FindNode(name);
+                                    ListViewSetting(path.Text);
+                                    treeView1.SelectedNode.Collapse();
                                     treeView1.SelectedNode.Expand();
                                 }
                             }
@@ -844,6 +855,7 @@ namespace Explorer
                             if (File.Exists(path2))
                             {
                                 int num = 1;
+
                                 for (; ; )
                                 {
                                     path2 = path.Text + "\\overlap" + num + "_" + copyName;
@@ -868,9 +880,11 @@ namespace Explorer
                                         {
                                             return;
                                         }
+
                                         ListViewSetting(path.Text);
                                         treeView1.SelectedNode.Collapse();
                                         treeView1.SelectedNode.Expand();
+
                                         return;
                                     }
                                 }
@@ -1256,11 +1270,21 @@ namespace Explorer
                     {
                         return;
                     }
-                    name = treeView1.SelectedNode.Text;
-                    treeView1.SelectedNode.Parent.Collapse();
-                    treeView1.SelectedNode.Expand();
-                    treeView1.SelectedNode = FindNode(name);
-                    treeView1.SelectedNode.Expand();
+
+                    try
+                    {
+                        name = treeView1.SelectedNode.Text;
+                        treeView1.SelectedNode.Parent.Collapse();
+                        treeView1.SelectedNode.Expand();
+                        treeView1.SelectedNode = FindNode(name);
+                        treeView1.SelectedNode.Expand();
+                    }
+                    catch
+                    {
+                        ListViewSetting(path.Text);
+                        treeView1.SelectedNode.Collapse();
+                        treeView1.SelectedNode.Expand();
+                    }
 
                     break;
                 }

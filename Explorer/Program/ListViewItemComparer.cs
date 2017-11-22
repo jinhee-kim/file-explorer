@@ -146,6 +146,7 @@ namespace Explorer
     {
         private int col;
         public SortOrder sort = SortOrder.None;
+
         public ListViewItemComparer()
         {
             col = 0;

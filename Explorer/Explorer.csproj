@@ -115,7 +115,7 @@
     </Compile>
     <Compile Include="Program\ShowPropertiesDialog.cs" />
     <Compile Include="Unused\FileExecute.cs" />
-    <Compile Include="Unused\getRegistry.cs" />
+    <Compile Include="Unused\GetRegistry.cs" />
     <Compile Include="Program\GetSystemImg.cs" />
     <Compile Include="Program\ListViewItemComparer.cs" />
     <Compile Include="MainForm.cs">
@@ -126,7 +126,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unused\setRegistry.cs" />
+    <Compile Include="Unused\SetRegistry.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -158,8 +158,6 @@
     <None Include="Resources\2.png" />
     <None Include="Resources\1.png" />
     <None Include="Resources\0.png" />
-    <None Include="Resources\forward.png" />
-    <None Include="Resources\backward.png" />
     <None Include="Resources\foldericon.ico" />
     <None Include="Resources\help-small.png" />
     <None Include="Resources\folder.png" />

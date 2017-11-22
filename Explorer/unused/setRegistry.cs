@@ -9,7 +9,7 @@ using Microsoft.Win32;
 
 namespace Explorer
 {
-    class PlusContextMenu
+    class SetRegistry
     {
         /* unused
         // Extension - 파일 확장자 (.zip, .txt 등)
