@@ -1496,8 +1496,8 @@ namespace Explorer
             if (selectedNode.Text.Equals("바탕 화면"))
             {
                 treeView1.Nodes[0].Collapse();
+                treeView1.SelectedNode = treeView1.Nodes[0];
                 treeView1.Nodes[0].Expand();
-
                 treeView1.SelectedNode = FindNode("Users");
                 treeView1.SelectedNode.Expand();
                 treeView1.SelectedNode = FindNode(userName);
@@ -1507,6 +1507,7 @@ namespace Explorer
             else if (selectedNode.Text.Equals("다운로드"))
             {
                 treeView1.Nodes[0].Collapse();
+                treeView1.SelectedNode = treeView1.Nodes[0];
                 treeView1.Nodes[0].Expand();
 
                 treeView1.SelectedNode = FindNode("Users");
@@ -1518,6 +1519,7 @@ namespace Explorer
             else if (selectedNode.Text.Equals("문서"))
             {
                 treeView1.Nodes[0].Collapse();
+                treeView1.SelectedNode = treeView1.Nodes[0];
                 treeView1.Nodes[0].Expand();
 
                 treeView1.SelectedNode = FindNode("Users");
