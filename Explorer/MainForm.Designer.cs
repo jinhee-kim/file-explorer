@@ -79,6 +79,7 @@
             this.favoriteView = new System.Windows.Forms.TreeView();
             this.imgFavorite = new System.Windows.Forms.ImageList(this.components);
             this.panel3 = new System.Windows.Forms.Panel();
+            this.imageListDrag = new System.Windows.Forms.ImageList(this.components);
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -338,6 +339,7 @@
             this.listView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.listView1_DragDrop);
             this.listView1.DragOver += new System.Windows.Forms.DragEventHandler(this.listView1_DragOver);
             this.listView1.DragLeave += new System.EventHandler(this.listView1_DragLeave);
+            this.listView1.GiveFeedback += new System.Windows.Forms.GiveFeedbackEventHandler(this.listView1_GiveFeedback);
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDown);
@@ -530,6 +532,12 @@
             this.panel3.Size = new System.Drawing.Size(278, 570);
             this.panel3.TabIndex = 11;
             // 
+            // imageListDrag
+            // 
+            this.imageListDrag.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageListDrag.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageListDrag.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -609,6 +617,7 @@
         private System.Windows.Forms.TreeView favoriteView;
         private System.Windows.Forms.ImageList imgFavorite;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.ImageList imageListDrag;
     }
 }
 

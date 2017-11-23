@@ -84,3 +84,5 @@ C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Debug\Explorer.csproj.GenerateRe
 C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Debug\Explorer.csproj.CoreCompileInputs.cache
 C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Debug\Explorer.exe
 C:\Users\hee38407\Desktop\Explorer\Explorer\obj\Debug\Explorer.pdb
+C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\Administrator\Desktop\Explorer\Explorer\obj\Debug\Explorer.csproj.ResolveComReference.cache

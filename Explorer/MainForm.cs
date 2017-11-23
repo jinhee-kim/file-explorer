@@ -1348,7 +1348,8 @@ namespace Explorer
         {
             //listView1.SelectedItems[0].BackColor = Color.FromArgb(10, 51, 153, 255);
             //listView1.SelectedItems[0].ForeColor = Color.White;
-            listView1.DoDragDrop(e.Item, DragDropEffects.All);
+
+            listView1.DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
         // 드래그 도중
@@ -1359,17 +1360,31 @@ namespace Explorer
                 dragMove.BackColor = Color.White;
                 dragMove.ForeColor = Color.Black;
             }
-
+            
             e.Effect = DragDropEffects.Move;
             Point p = listView1.PointToClient(MousePosition);
             ListViewItem item = listView1.GetItemAt(p.X, p.Y);
 
-            if (item.Selected == false && item.SubItems[1].Text.Equals(""))
+            if (item != null && item.Selected == false)
             {
                 dragMove = item;
                 dragMove.BackColor = Color.FromArgb(10, 51, 153, 255);
                 dragMove.ForeColor = Color.White;
             }
+        }
+
+        // 항목을 끄는 도중
+        private void listView1_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            if (e.Effect == DragDropEffects.Move)
+            {
+                e.UseDefaultCursors = false;
+
+                Icon icon = GetSystemImg.GetIcon(path.Text + "\\" + listView1.SelectedItems[0].Text, true);
+                listView1.Cursor = new Cursor(icon.Handle);
+                GetSystemImg.DestroyIcon(icon.Handle);
+            }
+            else e.UseDefaultCursors = true;
         }
 
         //드래그 도중 이탈
@@ -1397,32 +1412,25 @@ namespace Explorer
 
             Point p = listView1.PointToClient(MousePosition);
             ListViewItem item = listView1.GetItemAt(p.X, p.Y);
-            
 
-            if (item == null || !(item.SubItems[1].Text.Equals("")) || listView1.SelectedItems[0].SubItems[0].Text.Equals(item.SubItems[0].Text))
+            // 복사
+            if (Control.ModifierKeys == Keys.Control)
             {
-                #region Debug
-                //MessageBox.Show((item == null).ToString());
-                //MessageBox.Show((!(item.SubItems[1].Text.Equals(""))).ToString());
-                //MessageBox.Show((listView1.SelectedItems[0].SubItems[0].Text.Equals(item.SubItems[0].Text)).ToString());
-                #endregion
-            }
-            else
-            {
-                string path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
-                string path2 = path.Text + "\\" + item.SubItems[0].Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
-                #region Debug
-                //MessageBox.Show(path1 + " , " + path2);
-                //MessageBox.Show("pass");
-                #endregion
+                string path1;
+                string path2;
+                if (item == null)
+                {
+                    path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+                    path2 = path.Text + "\\" + "overlap_" + listView1.SelectedItems[0].SubItems[0].Text;
+                }
+                else
+                {
+                    path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+                    path2 = path.Text + "\\" + item.SubItems[0].Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+                }
 
                 if (listView1.SelectedItems[0].SubItems[1].Text.Equals("")) // 폴더일 경우
                 {
-                    //if (listView1.SelectedItems[0].SubItems[5].Text.IndexOf("ReadOnly") != -1 || item.SubItems[5].Text.IndexOf("ReadOnly") != -1)
-                    //{
-                    //    MessageBox.Show("Error: ReadOnly 폴더입니다.");
-                    //    return;
-                    //}
                     if (Directory.Exists(path2))
                     {
                         MessageBox.Show("Error: 같은 이름의 폴더가 존재합니다.");
@@ -1430,23 +1438,18 @@ namespace Explorer
                     }
                     try
                     {
-                        FileSystem.MoveDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+                        FileSystem.CopyDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
                         ListViewSetting(path.Text);
                         treeView1.SelectedNode.Collapse();
                         treeView1.SelectedNode.Expand();
                     }
                     catch
                     {
-                        MessageBox.Show("Error: 폴더를 이동할 수 없습니다.");
+                        MessageBox.Show("Error: 폴더를 복사할 수 없습니다.");
                     }
                 }
                 else // 파일일 경우
                 {
-                    //if (listView1.SelectedItems[0].SubItems[5].Text.IndexOf("ReadOnly") != -1 || item.SubItems[5].Text.IndexOf("ReadOnly") != -1)
-                    //{
-                    //    MessageBox.Show("Error: ReadOnly 파일입니다.");
-                    //    return;
-                    //}
                     if (File.Exists(path2))
                     {
                         MessageBox.Show("Error: 같은 이름의 파일이 존재합니다.");
@@ -1454,17 +1457,137 @@ namespace Explorer
                     }
                     try
                     {
-                        FileSystem.MoveFile(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+                        FileSystem.CopyFile(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
                         ListViewSetting(path.Text);
                         treeView1.SelectedNode.Collapse();
                         treeView1.SelectedNode.Expand();
                     }
                     catch
                     {
-                        MessageBox.Show("Error: 파일을 이동할 수 없습니다.");
+                        MessageBox.Show("Error: 파일을 복사할 수 없습니다.");
                     }
                 }
             }
+
+            ////  바로가기 생성
+            //else if (Control.ModifierKeys == Keys.Alt)
+            //{
+            //    IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
+            //    IWshRuntimeLibrary.IWshShortcut myShotCut = (IWshRuntimeLibrary.IWshShortcut)wsh.CreateShortcut(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "/test.lnk");
+            //    myShotCut.TargetPath = @"C:\Users\Administrator\Desktop\\Explorer";
+            //    myShotCut.IconLocation = @"C:\Users\Administrator\Desktop\\foldericon.ico";
+            //    myShotCut.Save();
+
+            //    ListViewSetting(path.Text);
+            //    treeView1.SelectedNode.Collapse();
+            //    treeView1.SelectedNode.Expand();
+
+            //    //string path1;
+            //    //string path2;
+            //    //if (item == null)
+            //    //{
+            //    //    path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+            //    //    path2 = path.Text + "\\" + "overlap_" + listView1.SelectedItems[0].SubItems[0].Text;
+            //    //}
+            //    //else
+            //    //{
+            //    //    path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+            //    //    path2 = path.Text + "\\" + item.SubItems[0].Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+            //    //}
+
+            //    //if (listView1.SelectedItems[0].SubItems[1].Text.Equals("")) // 폴더일 경우
+            //    //{
+            //    //    if (Directory.Exists(path2))
+            //    //    {
+            //    //        MessageBox.Show("Error: 같은 이름의 폴더가 존재합니다.");
+            //    //        return;
+            //    //    }
+            //    //    try
+            //    //    {
+            //    //        FileSystem.CopyDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+            //    //        ListViewSetting(path.Text);
+            //    //        treeView1.SelectedNode.Collapse();
+            //    //        treeView1.SelectedNode.Expand();
+            //    //    }
+            //    //    catch
+            //    //    {
+            //    //        MessageBox.Show("Error: 폴더를 복사할 수 없습니다.");
+            //    //    }
+            //    //}
+            //    //else // 파일일 경우
+            //    //{
+            //    //    if (File.Exists(path2))
+            //    //    {
+            //    //        MessageBox.Show("Error: 같은 이름의 파일이 존재합니다.");
+            //    //        return;
+            //    //    }
+            //    //    try
+            //    //    {
+            //    //        FileSystem.CopyFile(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+            //    //        ListViewSetting(path.Text);
+            //    //        treeView1.SelectedNode.Collapse();
+            //    //        treeView1.SelectedNode.Expand();
+            //    //    }
+            //    //    catch
+            //    //    {
+            //    //        MessageBox.Show("Error: 파일을 복사할 수 없습니다.");
+            //    //    }
+            //    //}
+            //}
+
+            // 이동
+            else
+            {
+                if (item == null || !(item.SubItems[1].Text.Equals("")) || listView1.SelectedItems[0].SubItems[0].Text.Equals(item.SubItems[0].Text))
+                {
+                    return;
+                }
+                else
+                {
+                    string path1 = path.Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+                    string path2 = path.Text + "\\" + item.SubItems[0].Text + "\\" + listView1.SelectedItems[0].SubItems[0].Text;
+
+                    if (listView1.SelectedItems[0].SubItems[1].Text.Equals("")) // 폴더일 경우
+                    {
+                        if (Directory.Exists(path2))
+                        {
+                            MessageBox.Show("Error: 같은 이름의 폴더가 존재합니다.");
+                            return;
+                        }
+                        try
+                        {
+                            FileSystem.MoveDirectory(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+                            ListViewSetting(path.Text);
+                            treeView1.SelectedNode.Collapse();
+                            treeView1.SelectedNode.Expand();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error: 폴더를 이동할 수 없습니다.");
+                        }
+                    }
+                    else // 파일일 경우
+                    {
+                        if (File.Exists(path2))
+                        {
+                            MessageBox.Show("Error: 같은 이름의 파일이 존재합니다.");
+                            return;
+                        }
+                        try
+                        {
+                            FileSystem.MoveFile(path1, path2, UIOption.AllDialogs, UICancelOption.DoNothing);
+                            ListViewSetting(path.Text);
+                            treeView1.SelectedNode.Collapse();
+                            treeView1.SelectedNode.Expand();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error: 파일을 이동할 수 없습니다.");
+                        }
+                    }
+                }
+            }
+            
         }
         #endregion
 
@@ -1557,7 +1680,9 @@ namespace Explorer
         private void favoriteView_AfterCollapse(object sender, TreeViewEventArgs e)
         {
             favoriteView.SelectedNode.Expand();
+            MessageBox.Show("이동할 즐겨찾기 항목을 선택하세요.");
         }
         #endregion
+        
     }
 }
