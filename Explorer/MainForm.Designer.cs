@@ -451,6 +451,7 @@
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 8;
             this.label1.Text = "| 아이콘 크기 |";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // status_txt
             // 

@@ -44,7 +44,9 @@ namespace Explorer
             this.userName = splitDesktopDirectoryPath[2];
 
             InitTreeDriveSetting();
-            
+
+            label1.Visible = false;
+            trackBar.Visible = false;
             listView1.DoubleBuffered(true);
             toolTip1.SetToolTip(helpbt, "도움말");
             RenderTray();
@@ -1165,6 +1167,8 @@ namespace Explorer
             InitMenuCheck();
             listView1.View = View.LargeIcon;
             menuLargeIcon.Checked = true;
+            label1.Visible = true;
+            trackBar.Visible = true;
             ListViewSetting(path.Text);
         }
 
@@ -1173,6 +1177,8 @@ namespace Explorer
             InitMenuCheck();
             listView1.View = View.Details;
             menuDetail.Checked = true;
+            label1.Visible = false;
+            trackBar.Visible = false;
             ListViewSetting(path.Text);
         }
 
@@ -1181,6 +1187,8 @@ namespace Explorer
             InitMenuCheck();
             listView1.View = View.List;
             menuList.Checked = true;
+            label1.Visible = false;
+            trackBar.Visible = false;
             ListViewSetting(path.Text);
         }
 
@@ -1683,6 +1691,10 @@ namespace Explorer
             MessageBox.Show("이동할 즐겨찾기 항목을 선택하세요.");
         }
         #endregion
-        
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
