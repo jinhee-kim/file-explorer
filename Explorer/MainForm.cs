@@ -1610,7 +1610,7 @@ namespace Explorer
             menuItem1.Text = "정보";
             menuItem1.Click += (o, s) =>
             {
-                MessageBox.Show("Explorer_v3.0");
+                MessageBox.Show("Explorer");
             };
 
             var menuItem2 = new MenuItem();
@@ -1691,10 +1691,5 @@ namespace Explorer
             MessageBox.Show("이동할 즐겨찾기 항목을 선택하세요.");
         }
         #endregion
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
